@@ -1,0 +1,3323 @@
+<div class="entry-content">
+			<p>Given two sorted singly linked lists having n and m elements each, merge them using constant space. First n smallest elements in both the lists should become part of first list and rest elements should be part of second list. Sorted order should be maintained. We are not allowed to change pointers of first linked list.</p>
+<p>For example,
+</p><pre>
+Input:
+First List: 2-&gt;4-&gt;7-&gt;8-&gt;10
+Second List: 1-&gt;3-&gt;12
+
+Output: 
+First List: 1-&gt;2-&gt;3-&gt;4-&gt;7
+Second List: 8-&gt;10-&gt;12
+</pre>
+<p><b>We strongly recommend you to minimize your browser and try this yourself first.</b></p>
+<p>The problem becomes very simple if we’re allowed to change pointers of first linked list. If we are allowed to change links, we can simply do something like merge of merge-sort algorithm. We assign first n smallest elements to the first linked list where n is the number of elements in first linked list and the rest to second linked list. We can achieve this in O(m + n) time and O(1) space, but this solution violates the requirement that we can’t change links of first list.</p>
+<p>The problem becomes a little tricky as we’re not allowed to change pointers in first linked list. The idea is something similar to <a href="http://www.geeksforgeeks.org/merge-two-sorted-arrays-o1-extra-space/">this</a> post but as we are given singly linked list, we can’t proceed backwards with the last element of LL2. </p>
+<p>The idea is for each element of LL1, we compare it with first element of LL2. If LL1 has a greater element than first element of LL2, then we swap the two elements involved. To keep LL2 sorted, we need to place first element of LL2 at its correct position. We can find mismatch by traversing LL2 once and correcting the pointers. </p>
+<p>Below is C++ implementation of this idea.</p>
+<pre class="brush: cpp; highlight: [33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74]; title: ; notranslate" title="">
+// Program to merge two sorted linked lists without
+// using any extra space and without changing links
+// of first list
+#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+ /* Structure for a linked list node */
+struct node
+{
+    int data;
+    struct node *next;
+};
+
+/* Given a reference (pointer to pointer) to the head
+  of a list and an int, push a new node on the front
+  of the list. */
+void push(struct node** head_ref, int new_data)
+{
+    /* allocate node */
+    struct node* new_node =
+        (struct node*) malloc(sizeof(struct node));
+
+    /* put in the data  */
+    new_node-&gt;data  = new_data;
+
+    /* link the old list off the new node */
+    new_node-&gt;next = (*head_ref);
+
+    /* move the head to point to the new node */
+    (*head_ref)    = new_node;
+}
+
+// Function to merge two sorted linked lists
+// LL1 and LL2 without using any extra space.
+void mergeLists(struct node *a, struct node * &amp;b)
+{
+    // run till either one of a or b runs out
+    while (a &amp;&amp; b)
+    {
+        // for each element of LL1,
+        // compare it with first element of LL2.
+        if (a-&gt;data &gt; b-&gt;data)
+        {
+            // swap the two elements involved
+            // if LL1 has a greater element
+            swap(a-&gt;data, b-&gt;data);
+
+            struct node *temp = b;
+
+            // To keep LL2 sorted, place first
+            // element of LL2 at its correct place
+            if (b-&gt;next &amp;&amp; b-&gt;data &gt; b-&gt;next-&gt;data)
+            {
+                b = b-&gt;next;
+                struct node *ptr= b, *prev = NULL;
+
+                // find mismatch by traversing the
+                // second linked list once
+                while (ptr &amp;&amp; ptr-&gt;data &lt; temp-&gt;data)
+                {
+                    prev = ptr;
+                    ptr = ptr -&gt; next;
+                }
+
+                // correct the pointers
+                prev-&gt;next = temp;
+                temp-&gt;next = ptr;
+            }
+        }
+
+        // move LL1 pointer to next element
+        a = a-&gt;next;
+    }
+}
+
+// Code to print the linked link
+void printList(struct node *head)
+{
+    while (head)
+    {
+        cout &lt;&lt; head-&gt;data &lt;&lt; "-&gt;" ;
+        head = head-&gt;next;
+    }
+    cout &lt;&lt; "NULL" &lt;&lt; endl;
+}
+
+// Driver code
+int main()
+{
+    struct node *a = NULL;
+    push(&amp;a, 10);
+    push(&amp;a, 8);
+    push(&amp;a, 7);
+    push(&amp;a, 4);
+    push(&amp;a, 2);
+
+    struct node *b = NULL;
+    push(&amp;b, 12);
+    push(&amp;b, 3);
+    push(&amp;b, 1);
+
+    mergeLists(a, b);
+
+    cout &lt;&lt; "First List: ";
+    printList(a);
+
+    cout &lt;&lt; "Second List: ";
+    printList(b);
+
+    return 0;
+}
+</pre>
+<p>Output :
+</p><pre>First List: 1-&gt;2-&gt;3-&gt;4-&gt;7-&gt;NULL
+Second List: 8-&gt;10-&gt;12-&gt;NULL
+</pre>
+<p>Time Complexity : O(mn)</p>
+<p>This article is contributed by <strong>Aditya Goel</strong>. Please write comments if you find anything incorrect, or you want to share more information about the topic discussed above</p>
+
+			<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- Big Rectangle Blog Bottom -->
+<ins class="adsbygoogle" style="display:inline-block;width:336px;height:280px" data-ad-client="ca-pub-9465609616171866" data-ad-slot="4061219431"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<br>
+
+
+<h1><strong><a href="http://www.practice.geeksforgeeks.org/tags.php">Company Wise Coding Practice</a>
+   <a href="http://www.practice.geeksforgeeks.org/probtags.php">Topic Wise Coding Practice</a></strong></h1>
+
+		</div><div class="entry-content">
+			<p>Given a list of integers, rearrange the list such that it consists of alternating minimum maximum elements <strong>using only list operations</strong>. The first element of the list should be minimum and second element should be maximum of all elements present in the list. Similarly, third element will be next minimum element and fourth element is next maximum element and so on. Use of extra space is not permitted.</p>
+<p>Examples:</p>
+<pre><strong>Input: </strong> [1 3 8 2 7 5 6 4]
+<strong>Output: </strong>[1 8 2 7 3 6 4 5]
+
+<strong>Input: </strong> [1 2 3 4 5 6 7]
+<strong>Output: </strong>[1 7 2 6 3 5 4]
+
+<strong>Input: </strong> [1 6 2 5 3 4]
+<strong>Output: </strong>[1 6 2 5 3 4]
+</pre>
+<p><!-- To show strongly recommend and practice link --></p>
+<div id="practice"></div>
+<p>The idea is to sort the list in ascending order first. Then we start popping elements from the end of the list and insert them into their correct position in the list.</p>
+<p>Below is C++ implementation of above idea –<br>
+</p><div class="responsive-tabs">
+<h2 class="tabtitle">C/C++</h2>
+<div class="tabcontent">
+
+<pre class="brush: cpp; highlight: [6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29]; title: ; notranslate" title="">
+// C++ program to rearrange a given list such that it
+// consists of alternating minimum maximum elements
+#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+// Function to rearrange a given list such that it
+// consists of alternating minimum maximum elements
+void alternateSort(list&lt;int&gt;&amp; inp)
+{
+    // sort the list in ascending order
+    inp.sort();
+
+    // get iterator to first element of the list
+    list&lt;int&gt;::iterator it = inp.begin();
+    it++;
+
+    for (int i=1; i&lt;(inp.size() + 1)/2; i++)
+    {
+        // pop last element (next greatest)
+        int val = inp.back();
+        inp.pop_back();
+
+        // insert it after next minimum element
+        inp.insert(it, val);
+
+        // increment the pointer for next pair
+        ++it;
+    }
+}
+
+// Driver code
+int main()
+{
+    // input list
+    list&lt;int&gt; inp({ 1, 3, 8, 2, 7, 5, 6, 4 });
+
+    // rearrange the given list
+    alternateSort(inp);
+
+    // print the modified list
+    for (int i : inp)
+        cout &lt;&lt; i &lt;&lt; " ";
+
+    return 0;
+}
+</pre>
+
+</div><h2 class="tabtitle">Java</h2>
+<div class="tabcontent">
+
+<pre class="brush: java; highlight: [5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22]; title: ; notranslate" title="">
+// Java program to rearrange a given list such that it
+// consists of alternating minimum maximum elements
+import java.util.*;
+
+class AlternateSort
+{
+	// Function to rearrange a given list such that it
+    // consists of alternating minimum maximum elements
+    // using LinkedList
+	public static void alternateSort(LinkedList&lt;Integer&gt; ll) 
+	{
+		Collections.sort(ll);
+		
+		for (int i = 1; i &lt; (ll.size() + 1)/2; i++)
+    	{
+    		Integer x = ll.getLast();
+    		ll.removeLast();
+    		ll.add(2*i - 1, x);
+		}
+		
+		System.out.println(ll);
+	}
+	
+	public static void main (String[] args) throws java.lang.Exception
+	{
+		// input list
+		Integer arr[] = {1, 3, 8, 2, 7, 5, 6, 4};
+		
+		// convert array to LinkedList
+        LinkedList&lt;Integer&gt; ll = new LinkedList&lt;Integer&gt;(Arrays.asList(arr));
+		
+		// rearrange the given list
+		alternateSort(ll);
+	}
+}
+</pre>
+<p></p></div></div><br>
+Output:
+<pre>1 8 2 7 3 6 4 5
+</pre>
+<p>This article is contributed by <strong>Aditya Goel</strong>. If you like GeeksforGeeks and would like to contribute, you can also write an article using <a href="http://www.contribute.geeksforgeeks.org">contribute.geeksforgeeks.org</a> or mail your article to contribute@geeksforgeeks.org. See your article appearing on the GeeksforGeeks main page and help other Geeks.</p>
+<p>Please write comments if you find anything incorrect, or you want to share more information about the topic discussed above.</p>
+
+			<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- Big Rectangle Blog Bottom -->
+<ins class="adsbygoogle" style="display:inline-block;width:336px;height:280px" data-ad-client="ca-pub-9465609616171866" data-ad-slot="4061219431"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<br>
+
+
+<h1><strong><a href="http://www.practice.geeksforgeeks.org/tags.php">Company Wise Coding Practice</a>
+   <a href="http://www.practice.geeksforgeeks.org/probtags.php">Topic Wise Coding Practice</a></strong></h1>
+
+		</div><div class="entry-content">
+			<p>We have discussed <a href="http://www.geeksforgeeks.org/flatten-a-linked-list-with-next-and-child-pointers/">flattening of a multi-level linked list</a> where nodes have two pointers down and next. In the previous post, we flattened the linked list level wise. How to flatten a linked list when we always need to process down pointer before next at every node.</p>
+<pre>
+Input:  
+1 - 2 - 3 - 4
+    |
+    7 -  8 - 10 - 12
+    |    |    |
+    9    16   11
+    |    |
+    14   17 - 18 - 19 - 20
+    |                    |
+    15 - 23             21
+         |
+         24
+
+Output:		
+Linked List to be flattened to
+1 - 2 - 7 - 9 - 14 - 15 - 23 - 24 - 8
+ - 16 - 17 - 18 - 19 - 20 - 21 - 10 - 
+11 - 12 - 3 - 4
+Note : 9 appears before 8 (When we are 
+at a node, we process down pointer before 
+right pointer)	
+</pre>
+<p>Source : Oracle Interview</p>
+<p><!-- To show strongly recommend and practice link    --></p>
+<div id="practice"></div>
+<p>If we take a closer look, we can notice that this problem is similar to <a href="http://www.geeksforgeeks.org/convert-given-binary-tree-doubly-linked-list-set-3/">tree to linked list conversion</a>. We recursively flatten a linked list with following steps.</p>
+<p><strong>1)</strong> If node is NULL, return NULL.<br>
+<strong>2)</strong> Store next node of current node (used in step 4).<br>
+<strong>3)</strong> Recursively flatten down list.  While flattening, keep track of last visited node, so that the next list can be linked after it.<br>
+<strong>4)</strong> Recursively flatten next list (we get the next list from pointer stored in step 2) and attach it after last visited node.</p>
+<p>Below is C++ implementation of above idea.</p>
+<pre class="brush: cpp; highlight: [13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39]; title: ; notranslate" title="">
+// C++ program to flatten a multilevel linked list
+#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+// A Linked List Node
+struct Node
+{
+    int data;
+    struct Node *next;
+    struct Node *down;
+};
+
+// Flattens a multi-level linked list depth wise
+Node* flattenList(Node* node)
+{
+    // Base case
+    if (node == NULL)
+        return NULL;
+
+    // To keep track of last visited node
+    // (NOTE: This is static)
+    static Node *last;
+    last = node;
+
+    // Store next pointer
+    Node *next = node-&gt;next;
+
+    // If down list exists, process it first
+    // Add down list as next of current node
+    if (node-&gt;down)
+       node-&gt;next = flattenList(node-&gt;down);
+
+    // If next exists, add it after the next
+    // of last added node
+    if (next)
+       last-&gt;next = flattenList(next);
+
+    return node;
+}
+
+// Utility method to print a linked list
+void printFlattenNodes(Node* head)
+{
+    while (head)
+    {
+        printf("%d ", head-&gt;data);
+        head = head-&gt;next;
+    }
+}
+
+// Utility function to create a new node
+Node* newNode(int new_data)
+{
+    Node* new_node = new Node;
+    new_node-&gt;data = new_data;
+    new_node-&gt;next = new_node-&gt;down = NULL;
+    return new_node;
+}
+
+// Driver code
+int main()
+{
+    // Creating above example list
+    Node* head = newNode(1);
+    head-&gt;next = newNode(2);
+    head-&gt;next-&gt;next = newNode(3);
+    head-&gt;next-&gt;next-&gt;next = newNode(4);
+    head-&gt;next-&gt;down = newNode(7);
+    head-&gt;next-&gt;down-&gt;down = newNode(9);
+    head-&gt;next-&gt;down-&gt;down-&gt;down = newNode(14);
+    head-&gt;next-&gt;down-&gt;down-&gt;down-&gt;down
+                                     = newNode(15);
+    head-&gt;next-&gt;down-&gt;down-&gt;down-&gt;down-&gt;next
+                                     = newNode(23);
+    head-&gt;next-&gt;down-&gt;down-&gt;down-&gt;down-&gt;next-&gt;down
+                                      = newNode(24);
+    head-&gt;next-&gt;down-&gt;next = newNode(8);
+    head-&gt;next-&gt;down-&gt;next-&gt;down = newNode(16);
+    head-&gt;next-&gt;down-&gt;next-&gt;down-&gt;down = newNode(17);
+    head-&gt;next-&gt;down-&gt;next-&gt;down-&gt;down-&gt;next
+                                      = newNode(18);
+    head-&gt;next-&gt;down-&gt;next-&gt;down-&gt;down-&gt;next-&gt;next
+                                      = newNode(19);
+    head-&gt;next-&gt;down-&gt;next-&gt;down-&gt;down-&gt;next-&gt;next-&gt;next
+                                      = newNode(20);
+    head-&gt;next-&gt;down-&gt;next-&gt;down-&gt;down-&gt;next-&gt;next-&gt;next-&gt;down
+                                      = newNode(21);
+    head-&gt;next-&gt;down-&gt;next-&gt;next = newNode(10);
+    head-&gt;next-&gt;down-&gt;next-&gt;next-&gt;down = newNode(11);
+
+    head-&gt;next-&gt;down-&gt;next-&gt;next-&gt;next = newNode(12);
+
+    // Flatten list and print modified list
+    head = flattenList(head);
+    printFlattenNodes(head);
+
+    return 0;
+}
+</pre>
+<p>Output:</p>
+<pre>
+1 2 7 9 14 15 23 24 8 16 17 18 19 20 21 10 11 12 3 4 
+</pre>
+<p>This article is contributed by <strong>Mu Ven</strong>. If you like GeeksforGeeks and would like to contribute, you can also write an article using <a href="http://www.contribute.geeksforgeeks.org%20">contribute.geeksforgeeks.org</a> or mail your article to contribute@geeksforgeeks.org. See your article appearing on the GeeksforGeeks main page and help other Geeks.</p>
+<p>Please write comments if you find anything incorrect, or you want to share more information about the topic discussed above.</p>
+
+			<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- Big Rectangle Blog Bottom -->
+<ins class="adsbygoogle" style="display:inline-block;width:336px;height:280px" data-ad-client="ca-pub-9465609616171866" data-ad-slot="4061219431"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<br>
+
+
+<h1><strong><a href="http://www.practice.geeksforgeeks.org/tags.php">Company Wise Coding Practice</a>
+   <a href="http://www.practice.geeksforgeeks.org/probtags.php">Topic Wise Coding Practice</a></strong></h1>
+
+		</div><div class="entry-content">
+			<p>Given a ternary tree, create a doubly linked list out of it. A ternary tree is just like binary tree but instead of having two nodes, it has three nodes i.e. left, middle, right.</p>
+<p>The doubly linked list should holds following properties –</p>
+<ol>
+<li> Left pointer of ternary tree should act as prev pointer of doubly linked list. </li>
+<li> Middle pointer of ternary tree should not point to anything.</li>
+<li> Right pointer of ternary tree should act as next pointer of doubly linked list.</li>
+<li> Each node of ternary tree is inserted into doubly linked list before its subtrees and for any node, its left child will be inserted first, followed by mid and right child (if any).</li>
+</ol>
+<p>For the above example, the linked list formed for below tree should be NULL  5  1  4  8  11  6  7  15  63  31  55  65 -&gt; NULL </p>
+<p><a href="http://d1gjlxt8vb0knt.cloudfront.net//wp-content/uploads/tree.jpg"><img src="http://d1gjlxt8vb0knt.cloudfront.net//wp-content/uploads/tree.jpg" alt="tree" width="867" height="370" class="aligncenter size-full wp-image-137973"></a></p>
+<p><b>We strongly recommend you to minimize your browser and try this yourself first.</b></p>
+<p>The idea is to traverse the tree in preoder fashion similar to binary tree preorder traversal. Here, when we visit a node, we will insert it into doubly linked list in the end using a tail pointer. That we use to maintain the required insertion order. We then recursively call for left child, middle child and right child in that order.</p>
+<p>Below is C++ implementation of this idea.</p>
+<pre class="brush: cpp; highlight: [54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83]; title: ; notranslate" title="">
+// C++ program to create a doubly linked list out
+// of given a ternary tree.
+#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+/* A ternary tree */
+struct Node
+{
+    int data;
+    struct Node *left, *middle, *right;
+};
+
+/* Helper function that allocates a new node with the
+   given data and assign NULL to left, middle and right
+   pointers.*/
+Node* newNode(int data)
+{
+    Node* node = new Node;
+    node-&gt;data = data;
+    node-&gt;left = node-&gt;middle = node-&gt;right = NULL;
+    return node;
+}
+
+/* Utility function that constructs doubly linked list
+by inserting current node at the end of the doubly
+linked list by using a tail pointer */
+void push(Node** tail_ref, Node* node)
+{
+    // initilize tail pointer
+    if (*tail_ref == NULL)
+    {
+        *tail_ref = node;
+
+        // set left, middle and right child to point
+        // to NULL
+        node-&gt;left = node-&gt;middle = node-&gt;right = NULL;
+
+        return;
+    }
+
+    // insert node in the end using tail pointer
+    (*tail_ref)-&gt;right = node;
+
+    // set prev of node
+    node-&gt;left = (*tail_ref);
+
+    // set middle and right child to point to NULL
+    node-&gt;right = node-&gt;middle = NULL;
+
+    // now tail pointer will point to inserted node
+    (*tail_ref) = node;
+}
+
+/* Create a doubly linked list out of given a ternary tree.
+by traversing the tree in preoder fashion. */
+Node* TernaryTreeToList(Node* root, Node** head_ref)
+{
+    // Base case
+    if (root == NULL)
+        return NULL;
+
+    //create a static tail pointer
+    static Node* tail = NULL;
+
+    // store left, middle and right nodes
+    // for future calls.
+    Node* left = root-&gt;left;
+    Node* middle = root-&gt;middle;
+    Node* right = root-&gt;right;
+
+    // set head of the doubly linked list
+    // head will be root of the ternary tree
+    if (*head_ref == NULL)
+        *head_ref = root;
+
+    // push current node in the end of DLL
+    push(&amp;tail, root);
+
+    //recurse for left, middle and right child
+    TernaryTreeToList(left, head_ref);
+    TernaryTreeToList(middle, head_ref);
+    TernaryTreeToList(right, head_ref);
+}
+
+// Utility function for printing double linked list.
+void printList(Node* head)
+{
+    printf("Created Double Linked list is:\n");
+    while (head)
+    {
+        printf("%d ", head-&gt;data);
+        head = head-&gt;right;
+    }
+}
+
+// Driver program to test above functions
+int main()
+{
+    // Construting ternary tree as shown in above figure
+    Node* root = newNode(30);
+
+    root-&gt;left = newNode(5);
+    root-&gt;middle = newNode(11);
+    root-&gt;right = newNode(63);
+
+    root-&gt;left-&gt;left = newNode(1);
+    root-&gt;left-&gt;middle = newNode(4);
+    root-&gt;left-&gt;right = newNode(8);
+
+    root-&gt;middle-&gt;left = newNode(6);
+    root-&gt;middle-&gt;middle = newNode(7);
+    root-&gt;middle-&gt;right = newNode(15);
+
+    root-&gt;right-&gt;left = newNode(31);
+    root-&gt;right-&gt;middle = newNode(55);
+    root-&gt;right-&gt;right = newNode(65);
+
+    Node* head = NULL;
+
+    TernaryTreeToList(root, &amp;head);
+
+    printList(head);
+
+    return 0;
+}
+</pre>
+<p>Output:
+</p><pre>Created Double Linked list is:
+30 5 1 4 8 11 6 7 15 63 31 55 65 
+</pre>
+<p>This article is contributed by <strong>Aditya Goel</strong>. If you like GeeksforGeeks and would like to contribute, you can also write an article and mail your article to contribute@geeksforgeeks.org. See your article appearing on the GeeksforGeeks main page and help other Geeks.</p>
+<p>Please write comments if you find anything incorrect, or you want to share more information about the topic discussed above</p>
+
+			<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- Big Rectangle Blog Bottom -->
+<ins class="adsbygoogle" style="display:inline-block;width:336px;height:280px" data-ad-client="ca-pub-9465609616171866" data-ad-slot="4061219431"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<br>
+
+
+<h1><strong><a href="http://www.practice.geeksforgeeks.org/tags.php">Company Wise Coding Practice</a>
+   <a href="http://www.practice.geeksforgeeks.org/probtags.php">Topic Wise Coding Practice</a></strong></h1>
+
+		</div><div class="entry-content">
+			<p>Given a singly linked list of 0s and 1s find its decimal equivalent.
+</p><pre>
+   Input  : 0-&gt;0-&gt;0-&gt;1-&gt;1-&gt;0-&gt;0-&gt;1-&gt;0
+   Output : 50   
+
+   Input  : 1-&gt;0-&gt;0
+   Output : 4</pre>
+<p>Decimal Value of an empty linked list is considered as 0.</p>
+<div id="practice"></div>
+<p>Initialize result as 0.  Traverse the linked list and for each node, multiply the result by 2 and add node’s data to it.</p>
+<pre class="brush: cpp; highlight: [13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30]; title: ; notranslate" title="">
+// C++ Program to find decimal value of
+// binary linked list
+#include&lt;iostream&gt;
+using namespace std;
+
+/* Link list Node */
+struct Node
+{
+    bool data;
+    struct Node* next;
+};
+
+/* Returns decimal value of binary linked list */
+int decimalValue(struct Node *head)
+{
+    // Initialized result
+    int  res = 0;
+
+    // Traverse linked list
+    while (head != NULL)
+    {
+        // Multiply result by 2 and add
+        // head's data
+        res = (res  &lt;&lt; 1) + head-&gt;data;
+
+        // Move next
+        head = head-&gt;next;
+    }
+    return res;
+}
+
+// Utility function to create a new node.
+Node *newNode(bool data)
+{
+    struct Node *temp = new Node;
+    temp-&gt;data = data;
+    temp-&gt;next = NULL;
+    return temp;
+}
+
+/* Drier program to test above function*/
+int main()
+{
+    /* Start with the empty list */
+    struct Node* head = newNode(1);
+    head-&gt;next = newNode(0);
+    head-&gt;next-&gt;next = newNode(1);
+    head-&gt;next-&gt;next-&gt;next = newNode(1);
+
+    cout &lt;&lt; "Decimal value is "
+         &lt;&lt; decimalValue(head);
+
+    return 0;
+}
+</pre>
+<p>Output :
+</p><pre>Decimal value is 11</pre>
+<div id="company_tags"></div>
+<p><iframe width="665" height="374" src="https://www.youtube.com/embed/k9x5UjTYi5I?feature=oembed" frameborder="0" allowfullscreen></iframe></p>
+<p>This article is contributed by <strong>Shivam Gupta</strong>. If you like GeeksforGeeks and would like to contribute, you can also write an article and mail your article to contribute@geeksforgeeks.org. See your article appearing on the GeeksforGeeks main page and help other Geeks.</p>
+<p>Please write comments if you find anything incorrect, or you want to share more information about the topic discussed above.</p>
+
+			<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- Big Rectangle Blog Bottom -->
+<ins class="adsbygoogle" style="display:inline-block;width:336px;height:280px" data-ad-client="ca-pub-9465609616171866" data-ad-slot="4061219431"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<br>
+
+
+<h1><strong><a href="http://www.practice.geeksforgeeks.org/tags.php">Company Wise Coding Practice</a>
+   <a href="http://www.practice.geeksforgeeks.org/probtags.php">Topic Wise Coding Practice</a></strong></h1>
+
+		</div><div class="entry-content">
+			<p>Given K sorted linked lists of size N each, merge them and print the sorted output.</p>
+<p>Example:
+</p><pre>
+Input: k = 3, n =  4
+list1 = 1-&gt;3-&gt;5-&gt;7-&gt;NULL
+list2 = 2-&gt;4-&gt;6-&gt;8-&gt;NULL
+list3 = 0-&gt;9-&gt;10-&gt;11
+
+Output: 
+0-&gt;1-&gt;2-&gt;3-&gt;4-&gt;5-&gt;6-&gt;7-&gt;8-&gt;9-&gt;10-&gt;11</pre>
+<div id="practice"></div>
+<p> <br>
+</p><center><strong>Method 1 (Simple) </strong></center><br>
+A Simple Solution is to initialize result as first list.  Now traverse all lists starting from second list. Insert every node of currently traversed list into result in a sorted way.  Time complexity of this solution is O(N<sup>2</sup>) where N is total number of nodes, i.e., N = kn.
+<p> <br>
+</p><center><strong>Method 2 (Using Min Heap)</strong></center><br>
+A <strong>Better solution </strong>is to use Min Heap based solution which is discussed <a href="http://www.geeksforgeeks.org/merge-k-sorted-arrays/">here</a> for arrays.  Time complexity of this solution would be O(nk Log k)
+<p> <br>
+</p><center><strong>Method 3 (Using Divide and Conquer))</strong></center><br>
+In this post, <strong>Divide and Conquer</strong> approach is discussed.  This approach doesn’t require extra space for heap and works in O(nk Log k)
+<p>We already know that <a href="http://www.geeksforgeeks.org/merge-two-sorted-linked-lists/">merging of two linked lists</a> can be done in O(n) time and O(1) space (For arrays O(n) space is required). The idea is to pair up K lists and merge each pair in linear time using O(1) space. After first cycle, K/2 lists are left each of size 2*N. After second cycle, K/4 lists are left each of size 4*N and so on. We repeat the procedure until we have only one list left.  </p>
+<p>Below is C++ implementation of the above idea.</p>
+<pre class="brush: cpp; highlight: [52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78]; title: ; notranslate" title="">
+// C++ program to merge k sorted arrays of size n each
+#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+// A Linked List node
+struct Node
+{
+    int data;
+    Node* next;
+};
+
+/* Function to print nodes in a given linked list */
+void printList(Node* node)
+{
+    while (node != NULL)
+    {
+        printf("%d ", node-&gt;data);
+        node = node-&gt;next;
+    }
+}
+
+/* Takes two lists sorted in increasing order, and merge
+   their nodes together to make one big sorted list. Below
+   function takes O(Log n) extra space for recursive calls,
+   but it can be easily modified to work with same time and
+   O(1) extra space  */
+Node* SortedMerge(Node* a, Node* b)
+{
+    Node* result = NULL;
+
+    /* Base cases */
+    if (a == NULL)
+        return (b);
+    else if(b == NULL)
+        return (a);
+
+    /* Pick either a or b, and recur */
+    if(a-&gt;data &lt;= b-&gt;data)
+    {
+        result = a;
+        result-&gt;next = SortedMerge(a-&gt;next, b);
+    }
+    else
+    {
+        result = b;
+        result-&gt;next = SortedMerge(a, b-&gt;next);
+    }
+
+    return result;
+}
+
+// The main function that takes an array of lists
+// arr[0..last] and generates the sorted output
+Node* mergeKLists(Node* arr[], int last)
+{
+    // repeat until only one list is left
+    while (last != 0)
+    {
+        int i = 0, j = last;
+
+        // (i, j) forms a pair
+        while (i &lt; j)
+        {
+            // merge List i with List j and store
+            // merged list in List i
+            arr[i] = SortedMerge(arr[i], arr[j]);
+
+            // consider next pair
+            i++, j--;
+
+            // If all pairs are merged, update last
+            if (i &gt;= j)
+                last = j;
+        }
+    }
+
+    return arr[0];
+}
+
+// Utility function to create a new node.
+Node *newNode(int data)
+{
+    struct Node *temp = new Node;
+    temp-&gt;data = data;
+    temp-&gt;next = NULL;
+    return temp;
+}
+
+// Driver program to test above functions
+int main()
+{
+    int k = 3; // Number of linked lists
+    int n = 4; // Number of elements in each list
+
+    // an array of pointers storing the head nodes
+    // of the linked lists
+    Node* arr[k];
+
+    arr[0] = newNode(1);
+    arr[0]-&gt;next = newNode(3);
+    arr[0]-&gt;next-&gt;next = newNode(5);
+    arr[0]-&gt;next-&gt;next-&gt;next = newNode(7);
+
+    arr[1] = newNode(2);
+    arr[1]-&gt;next = newNode(4);
+    arr[1]-&gt;next-&gt;next = newNode(6);
+    arr[1]-&gt;next-&gt;next-&gt;next = newNode(8);
+
+    arr[2] = newNode(0);
+    arr[2]-&gt;next = newNode(9);
+    arr[2]-&gt;next-&gt;next = newNode(10);
+    arr[2]-&gt;next-&gt;next-&gt;next = newNode(11);
+
+    // Merge all lists
+    Node* head = mergeKLists(arr, k - 1);
+
+    printList(head);
+
+    return 0;
+}
+</pre>
+<p>Output :
+</p><pre>0 1 2 3 4 5 6 7 8 9 10 11 </pre>
+<p>Time Complexity of above algorithm is O(nk logk) as outer while loop in function mergeKLists() runs log k times and every time we are processing nk elements.  </p>
+<p>This article is contributed by <strong>Aditya Goel</strong>. If you like GeeksforGeeks and would like to contribute, you can also write an article and mail your article to contribute@geeksforgeeks.org. See your article appearing on the GeeksforGeeks main page and help other Geeks.</p>
+<p>Please write comments if you find anything incorrect, or you want to share more information about the topic discussed above</p>
+
+			<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- Big Rectangle Blog Bottom -->
+<ins class="adsbygoogle" style="display:inline-block;width:336px;height:280px" data-ad-client="ca-pub-9465609616171866" data-ad-slot="4061219431"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<br>
+
+
+<h1><strong><a href="http://www.practice.geeksforgeeks.org/tags.php">Company Wise Coding Practice</a>
+   <a href="http://www.practice.geeksforgeeks.org/probtags.php">Topic Wise Coding Practice</a></strong></h1>
+
+		</div><div class="entry-content">
+			<p>Given a singly linked list, delete middle  of the linked list. For example, if given linked list is 1-&gt;2-&gt;3-&gt;4-&gt;5 then linked list should be modified to 1-&gt;2-&gt;4-&gt;5</p>
+<p>If there are even nodes, then there would be two middle nodes, we need to delete the second middle element. For example, if given linked list is 1-&gt;2-&gt;3-&gt;4-&gt;5-&gt;6 then it should be modified to 1-&gt;2-&gt;3-&gt;5-&gt;6.</p>
+<p>If the input linked list is NULL, then it should remain NULL.</p>
+<p>If the input linked list has 1 node, then this node should be deleted and new head should be returned.</p>
+<div id="practice"></div>
+<p>A Simple Solution is to first count number of nodes in linked list, then delete n/2’th node using the simple deletion process.  </p>
+<p>The above solution requires two traversals of linked list.  We can delete middle node using one traversal.  The idea is to use two pointers, slow_ptr and fast_ptr.  Both pointers start from head of list.  When fast_ptr reaches end, slow_ptr reaches middle. This idea is same as the one used in method 2 of <a href="http://www.geeksforgeeks.org/write-a-c-function-to-print-the-middle-of-the-linked-list/">this</a> post.  The additional thing in this post is to keep track of previous of middle so that we can delete middle.</p>
+<p>Below is C++ implementation.</p>
+<pre class="brush: cpp; highlight: [12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44]; title: ; notranslate" title="">
+// C++ program to delete middle of a linked list
+#include&lt;bits/stdc++.h&gt;
+using namespace std;
+
+/* Link list Node */
+struct Node
+{
+    int data;
+    struct Node* next;
+};
+
+// Deletes middle node and returns head of the
+// modified list
+struct Node* deleteMid(struct Node *head)
+{
+    // Base cases
+    if (head == NULL)
+        return NULL;
+    if (head-&gt;next == NULL)
+    {
+        delete head;
+        return NULL;
+    }
+
+    // Initialize slow and fast pointers to reach
+    // middle of linked list
+    struct Node *slow_ptr = head;
+    struct Node *fast_ptr = head;
+
+    // Find the middle and previous of middle.
+    struct Node *prev; // To store previous of slow_ptr
+    while (fast_ptr != NULL &amp;&amp; fast_ptr-&gt;next != NULL)
+    {
+        fast_ptr = fast_ptr-&gt;next-&gt;next;
+        prev = slow_ptr;
+        slow_ptr = slow_ptr-&gt;next;
+    }
+
+    //Delete the middle node
+    prev-&gt;next = slow_ptr-&gt;next;
+    delete slow_ptr;
+
+    return head;
+}
+
+// A utility function to print a given linked list
+void printList(struct Node *ptr)
+{
+    while (ptr != NULL)
+    {
+        cout &lt;&lt; ptr-&gt;data &lt;&lt; "-&gt;";
+        ptr = ptr-&gt;next;
+    }
+    cout &lt;&lt; "NULL\n";
+}
+
+// Utility function to create a new node.
+Node *newNode(int data)
+{
+    struct Node *temp = new Node;
+    temp-&gt;data = data;
+    temp-&gt;next = NULL;
+    return temp;
+}
+
+/* Drier program to test above function*/
+int main()
+{
+    /* Start with the empty list */
+    struct Node* head = newNode(1);
+    head-&gt;next = newNode(2);
+    head-&gt;next-&gt;next = newNode(3);
+    head-&gt;next-&gt;next-&gt;next = newNode(4);
+
+    cout &lt;&lt; "Gven Linked List\n";
+    printList(head);
+
+    head = deleteMid(head);
+
+    cout &lt;&lt; "Linked List after deletion of middle\n";
+    printList(head);
+
+    return 0;
+}
+</pre>
+<p>Output :
+</p><pre>Gven Linked List
+1-&gt;2-&gt;3-&gt;4-&gt;NULL
+Linked List after deletion of middle
+1-&gt;2-&gt;4-&gt;NULL
+</pre>
+<div id="company_tags"></div>
+<p>This article is contributed by <strong>Piyush Gupta</strong>. If you like GeeksforGeeks and would like to contribute, you can also write an article and mail your article to contribute@geeksforgeeks.org. See your article appearing on the GeeksforGeeks main page and help other Geeks.</p>
+<p>Please write comments if you find anything incorrect, or you want to share more information about the topic discussed above</p>
+
+			<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- Big Rectangle Blog Bottom -->
+<ins class="adsbygoogle" style="display:inline-block;width:336px;height:280px" data-ad-client="ca-pub-9465609616171866" data-ad-slot="4061219431"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<br>
+
+
+<h1><strong><a href="http://www.practice.geeksforgeeks.org/tags.php">Company Wise Coding Practice</a>
+   <a href="http://www.practice.geeksforgeeks.org/probtags.php">Topic Wise Coding Practice</a></strong></h1>
+
+		</div><div class="entry-content">
+			<p>Given a singly linked list, find if the linked list is <a href="http://geeksquiz.com/circular-linked-list/">circular</a> or not.  A linked list is called circular if it not NULL terminated and all nodes are connected in the form of a cycle.  Below is an example of circular linked list.</p>
+<p><a href="http://geeksforgeeks.org/wp-content/uploads/cll_inserted.gif"><img src="http://geeksforgeeks.org/wp-content/uploads/cll_inserted.gif" alt="" title="cll" class="aligncenter size-full wp-image-10918" height="84" width="500"></a></p>
+<p>An empty linked list is considered as circular.</p>
+<p>Note  that this problem is different from <a href="http://www.practice.geeksforgeeks.org/problem-page.php?pid=700099">cycle detection problem</a>, here all nodes have to be part of cycle.</p>
+<div id="practice"></div>
+<p>The idea is to store head of the linked list and traverse it.  If we reach NULL, linked list is not circular.  If reach head again, linked list is circular.</p>
+<pre class="brush: cpp; highlight: [12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31]; title: ; notranslate" title="">
+// C++ program to check if linked list is circular
+#include&lt;bits/stdc++.h&gt;
+using namespace std;
+
+/* Link list Node */
+struct Node
+{
+    int data;
+    struct Node* next;
+};
+
+/* This function returns true if given linked
+   list is circular, else false. */
+bool isCircular(struct Node *head)
+{
+    // An empty linked list is circular
+    if (head == NULL)
+       return true;
+
+    // Next of head
+    struct Node *node = head-&gt;next;
+
+    // This loop would stope in both cases (1) If
+    // Circular (2) Not circular
+    while (node != NULL &amp;&amp; node != head)
+       node = node-&gt;next;
+
+    // If loop stopped because of circular
+    // condition
+    return (node == head);
+}
+
+// Utility function to create a new node.
+Node *newNode(int data)
+{
+    struct Node *temp = new Node;
+    temp-&gt;data = data;
+    temp-&gt;next = NULL;
+    return temp;
+}
+
+/* Drier program to test above function*/
+int main()
+{
+    /* Start with the empty list */
+    struct Node* head = newNode(1);
+    head-&gt;next = newNode(2);
+    head-&gt;next-&gt;next = newNode(3);
+    head-&gt;next-&gt;next-&gt;next = newNode(4);
+
+    isCircular(head)? cout &lt;&lt; "Yes\n" :
+                      cout &lt;&lt; "No\n" ;
+
+    // Making linked list circular
+    head-&gt;next-&gt;next-&gt;next-&gt;next = head;
+
+    isCircular(head)? cout &lt;&lt; "Yes\n" :
+                      cout &lt;&lt; "No\n" ;
+
+    return 0;
+}
+</pre>
+<p>Output :
+</p><pre>No
+Yes</pre>
+<div id="company_tags"></div>
+<p><iframe width="665" height="374" src="https://www.youtube.com/embed/ce2rnhkNLzU?feature=oembed" frameborder="0" allowfullscreen></iframe></p>
+<p>This article is contributed by <strong>Shivam Gupta</strong>. If you like GeeksforGeeks and would like to contribute, you can also write an article and mail your article to contribute@geeksforgeeks.org. See your article appearing on the GeeksforGeeks main page and help other Geeks.</p>
+<p>Please write comments if you find anything incorrect, or you want to share more information about the topic discussed above</p>
+
+			<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- Big Rectangle Blog Bottom -->
+<ins class="adsbygoogle" style="display:inline-block;width:336px;height:280px" data-ad-client="ca-pub-9465609616171866" data-ad-slot="4061219431"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<br>
+
+
+<h1><strong><a href="http://www.practice.geeksforgeeks.org/tags.php">Company Wise Coding Practice</a>
+   <a href="http://www.practice.geeksforgeeks.org/probtags.php">Topic Wise Coding Practice</a></strong></h1>
+
+		</div><div class="entry-content">
+			<p>Like array and linked list, unrolled Linked List is also a linear data structure and is a variant of linked list. Unlike simple linked list, it stores multiple elements at each node. That is, instead of storing single element at a node, unrolled linked lists store an array of elements at a node. Unrolled linked list covers advantages of both array and linked list as it reduces the memory overhead in comparison to simple linked lists by storing multiple elements at each node and it also has the advantage of fast insertion and deletion as that of a linked list.</p>
+<p><a href="http://d1gjlxt8vb0knt.cloudfront.net//wp-content/uploads/unrolledLinkedList.png"><img src="http://d1gjlxt8vb0knt.cloudfront.net//wp-content/uploads/unrolledLinkedList.png" alt="unrolledlinkedlist" width="508" height="304" class="aligncenter size-full wp-image-139471"></a></p>
+<p><strong>Advantages:</strong></p>
+<ul>
+<li>Because of the Cache behavior, linear search is much faster in unrolled linked lists.</li>
+<li>In comparison to ordinary linked list, it requires less storage space for pointers/references.</li>
+<li>It performs operations like insertion, deletion and traversal more quickly than ordinary linked lists (because search is faster). </li>
+</ul>
+<p><strong>Disadvantages:</strong></p>
+<ul>
+<li>The overhead per node is comparatively high than singly linked lists. Refer an example node in below code.  </li>
+</ul>
+<p><strong>Simple Implementation in C</strong><br>
+The below program creates a simple unrolled linked list with 3 nodes containing variable number of elements in each.  It also traverses the created list.</p>
+<pre class="brush: cpp; title: ; notranslate" title="">
+// C program to implement unrolled linked list
+// and traversing it.
+#include&lt;stdio.h&gt;
+#include&lt;stdlib.h&gt;
+#define maxElements 4
+
+// Unrolled Linked List Node
+struct Node
+{
+    int numElements;
+    int array[maxElements];
+    struct Node *next;
+};
+
+/* Function to traverse am unrolled linked list
+   and print all the elements*/
+void printUnrolledList(struct Node *n)
+{
+    while (n != NULL)
+    {
+        // Print elements in current node
+        for (int i=0; i&lt;n-&gt;numElements; i++)
+            printf("%d ", n-&gt;array[i]);
+
+        // Move to next node 
+        n = n-&gt;next;
+    }
+}
+
+// Program to create an unrolled linked list
+// with 3 Nodes
+int main()
+{
+    struct Node* head = NULL;
+    struct Node* second = NULL;
+    struct Node* third = NULL;
+
+    // allocate 3 Nodes
+    head = (struct Node*)malloc(sizeof(struct Node));
+    second = (struct Node*)malloc(sizeof(struct Node));
+    third = (struct Node*)malloc(sizeof(struct Node));
+
+    // Let us put some values in second node (Number
+    // of values must be less than or equal to
+    // maxElement)
+    head-&gt;numElements = 3;
+    head-&gt;array[0] = 1;
+    head-&gt;array[1] = 2;
+    head-&gt;array[2] = 3;
+
+    // Link first Node with the second Node
+    head-&gt;next = second;
+
+    // Let us put some values in second node (Number
+    // of values must be less than or equal to
+    // maxElement)
+    second-&gt;numElements = 3;
+    second-&gt;array[0] = 4;
+    second-&gt;array[1] = 5;
+    second-&gt;array[2] = 6;
+
+    // Link second Node with the third Node
+    second-&gt;next = third;
+
+    // Let us put some values in third node (Number
+    // of values must be less than or equal to
+    // maxElement)
+    third-&gt;numElements = 3;
+    third-&gt;array[0] = 7;
+    third-&gt;array[1] = 8;
+    third-&gt;array[2] = 9;
+    third-&gt;next = NULL;
+
+    printUnrolledList(head);
+
+    return 0;
+}
+</pre>
+<p>Output:</p>
+<pre>
+1 2 3 4 5 6 7 8 9
+</pre>
+<p>In this article, we have introduced unrolled list and advantages of it.  We have also shown how to traverse the list.  In the next article, we will be discussing insertion, deletion and values of maxElements/numElements in detail.</p>
+<p>This article is contributed by <a href="https://www.facebook.com/harsh.agarwal.16752" style="color: #008000"><strong>Harsh Agarwal</strong></a>. If you like GeeksforGeeks and would like to contribute, you can also write an article using <a href="http://www.contribute.geeksforgeeks.org">contribute.geeksforgeeks.org</a> or mail your article to contribute@geeksforgeeks.org. See your article appearing on the GeeksforGeeks main page and help other Geeks.</p>
+<p>Please write comments if you find anything incorrect, or you want to share more information about the topic discussed above.</p>
+
+			<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- Big Rectangle Blog Bottom -->
+<ins class="adsbygoogle" style="display:inline-block;width:336px;height:280px" data-ad-client="ca-pub-9465609616171866" data-ad-slot="4061219431"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<br>
+
+
+<h1><strong><a href="http://www.practice.geeksforgeeks.org/tags.php">Company Wise Coding Practice</a>
+   <a href="http://www.practice.geeksforgeeks.org/probtags.php">Topic Wise Coding Practice</a></strong></h1>
+
+		</div><div class="entry-content">
+			<p>Given a Binary Tree, convert it to a Circular Doubly Linked List (In-Place).</p>
+<ul>
+<li>The left and right pointers in nodes are to be used as previous and next pointers respectively in converted Circular Linked List.</li>
+<li>The order of nodes in List must be same as Inorder of the given Binary Tree.</li>
+<li>The first node of Inorder traversal must be head node of the Circular List.</li>
+</ul>
+<p><strong>Example:</strong><br>
+<a href="http://d1gjlxt8vb0knt.cloudfront.net//wp-content/uploads/tree-to-list.png"><img class="aligncenter size-full wp-image-139076" src="http://d1gjlxt8vb0knt.cloudfront.net//wp-content/uploads/tree-to-list.png" alt="tree to list" width="873" height="534"></a></p>
+<div id="practice"> </div>
+<p>The idea can be described using below steps.<br>
+1) Write a general purpose function that concatenates two given circular doubly lists (This function is explained below).<br>
+2) Now traverse the given tree<br>
+….a) Recursively convert left subtree to a circular DLL.  Let the converted list be leftList.<br>
+….a) Recursively convert right subtree to a circular DLL.   Let the converted list be rightList.<br>
+….c) Make a circular linked list of root of the tree, make left and right of root to point to itself.<br>
+….d) Concatenate leftList with list of single root node.<br>
+….e) Concatenate the list produced in step above (d) with rightList.</p>
+<p>Note that the above code traverses tree in Postorder fashion.  We can traverse in inorder fashion also. We can first concatenate left subtree and root, then recur for right subtree and concatenate the result with left-root concatenation.</p>
+<p><strong>How to Concatenate two circular DLLs?</strong></p>
+<ul>
+<li>Get the last node of the left list. Retrieving the last node is an O(1) operation, since the prev pointer of the head points to the last node of the list.</li>
+<li>Connect it with the first node of the right list</li>
+<li>Get the last node of the second list</li>
+<li>Connect it with the head of the list.</li>
+</ul>
+<p>Below are implementations of above idea.</p>
+<div class="responsive-tabs">
+<h2 class="tabtitle">C++</h2>
+<div class="tabcontent">
+
+<pre class="brush: cpp; highlight: [46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67]; title: ; notranslate" title="">
+// C++ Program to convert a Binary Tree
+// to a Circular Doubly Linked List
+#include&lt;iostream&gt;
+using namespace std;
+
+// To represents a node of a Binary Tree
+struct Node
+{
+    struct Node *left, *right;
+    int data;
+};
+
+// A function that appends rightList at the end
+// of leftList.
+Node *concatenate(Node *leftList, Node *rightList)
+{
+    // If either of the list is empty
+    // then return the other list
+    if (leftList == NULL)
+        return rightList;
+    if (rightList == NULL)
+        return leftList;
+
+    // Store the last Node of left List
+    Node *leftLast = leftList-&gt;left;
+
+    // Store the last Node of right List
+    Node *rightLast = rightList-&gt;left;
+
+    // Connect the last node of Left List
+    // with the first Node of the right List
+    leftLast-&gt;right = rightList;
+    rightList-&gt;left = leftLast;
+
+    // Left of first node points to
+    // the last node in the list
+    leftList-&gt;left = rightLast;
+
+    // Right of last node refers to the first
+    // node of the List
+    rightLast-&gt;right = leftList;
+
+    return leftList;
+}
+
+// Function converts a tree to a circular Linked List
+// and then returns the head of the Linked List
+Node *bTreeToCList(Node *root)
+{
+    if (root == NULL)
+        return NULL;
+
+    // Recursively convert left and right subtrees
+    Node *left = bTreeToCList(root-&gt;left);
+    Node *right = bTreeToCList(root-&gt;right);
+
+    // Make a circular linked list of single node
+    // (or root). To do so, make the right and
+    // left pointers of this node point to itself
+    root-&gt;left = root-&gt;right = root;
+
+    // Step 1 (concatenate the left list with the list 
+    //         with single node, i.e., current node)
+    // Step 2 (concatenate the returned list with the
+    //         right List)
+    return concatenate(concatenate(left, root), right);
+}
+
+// Display Circular Link List
+void displayCList(Node *head)
+{
+    cout &lt;&lt; "Circular Linked List is :\n";
+    Node *itr = head;
+    do
+    {
+        cout &lt;&lt; itr-&gt;data &lt;&lt;" ";
+        itr = itr-&gt;right;
+    } while (head!=itr);
+    cout &lt;&lt; "\n";
+}
+
+
+// Create a new Node and return its address
+Node *newNode(int data)
+{
+    Node *temp = new Node();
+    temp-&gt;data = data;
+    temp-&gt;left = temp-&gt;right = NULL;
+    return temp;
+}
+
+// Driver Program to test above function
+int main()
+{
+    Node *root = newNode(10);
+    root-&gt;left = newNode(12);
+    root-&gt;right = newNode(15);
+    root-&gt;left-&gt;left = newNode(25);
+    root-&gt;left-&gt;right = newNode(30);
+    root-&gt;right-&gt;left = newNode(36);
+
+    Node *head = bTreeToCList(root);
+    displayCList(head);
+
+    return 0;
+}
+</pre>
+
+</div><h2 class="tabtitle">Java</h2>
+<div class="tabcontent">
+
+<pre class="brush: java; highlight: [60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82]; title: ; notranslate" title="">
+// Java Program to convert a Binary Tree to a
+// Circular Doubly Linked List
+
+// Node class represents a Node of a Tree
+class Node
+{
+    int val;
+    Node left,right;
+
+    public Node(int val)
+    {
+        this.val = val;
+        left = right = null;
+    }
+}
+
+// A class to represent a tree
+class Tree
+{
+    Node root;
+    public Tree()
+    {
+        root = null;
+    }
+
+    // concatenate both the lists and returns the head
+    // of the List
+    public Node concatenate(Node leftList,Node rightList)
+    {
+        // If either of the list is empty, then
+        // return the other list
+        if (leftList == null)
+            return rightList;
+        if (rightList == null)
+            return leftList;
+
+        // Store the last Node of left List
+        Node leftLast = leftList.left;
+
+        // Store the last Node of right List
+        Node rightLast = rightList.left;
+
+        // Connect the last node of Left List
+        // with the first Node of the right List
+        leftLast.right = rightList;
+        rightList.left = leftLast;
+
+        // left of first node refers to
+        // the last node in the list
+        leftList.left = rightLast;
+
+        // Right of last node refers to the first
+        // node of the List
+        rightLast.right = leftList;
+
+        // Return the Head of the List
+        return leftList;
+    }
+
+    // Method converts a tree to a circular
+    // Link List and then returns the head
+    // of the Link List
+    public Node bTreeToCList(Node root)
+    {
+        if (root == null)
+            return null;
+
+        // Recursively convert left and right subtrees
+        Node left = bTreeToCList(root.left);
+        Node right = bTreeToCList(root.right);
+
+        // Make a circular linked list of single node
+        // (or root). To do so, make the right and
+        // left pointers of this node point to itself
+        root.left = root.right = root;
+
+        // Step 1 (concatenate the left list with the list 
+        //         with single node, i.e., current node)
+        // Step 2 (concatenate the returned list with the
+        //         right List)
+        return concatenate(concatenate(left, root), right);
+    }
+
+    // Display Circular Link List
+    public void display(Node head)
+    {
+        System.out.println("Circular Linked List is :");
+        Node itr = head;
+        do
+        {
+            System.out.print(itr.val+ " " );
+            itr = itr.right;
+        }
+        while (itr != head);
+        System.out.println();
+    }
+}
+
+// Driver Code
+class Main
+{
+    public static void main(String args[])
+    {
+        // Build the tree
+        Tree tree = new Tree();
+        tree.root = new Node(10);
+        tree.root.left = new Node(12);
+        tree.root.right = new Node(15);
+        tree.root.left.left = new Node(25);
+        tree.root.left.right = new Node(30);
+        tree.root.right.left = new Node(36);
+
+        // head refers to the head of the Link List
+        Node head = tree.bTreeToCList(tree.root);
+
+        // Display the Circular LinkedList
+        tree.display(head);
+    }
+}
+</pre>
+<p></p></div></div><br>
+Output:
+<pre>Circular Linked List is :
+25 12 30 10 36 15
+</pre>
+<p>This article is contributed by <strong>Chirag Agarwal</strong>. If you like GeeksforGeeks and would like to contribute, you can also write an article using <a href="http://www.contribute.geeksforgeeks.org">contribute.geeksforgeeks.org</a> or mail your article to contribute@geeksforgeeks.org. See your article appearing on the GeeksforGeeks main page and help other Geeks.</p>
+<p>Please write comments if you find anything incorrect, or you want to share more information about the topic discussed above.</p>
+
+			<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- Big Rectangle Blog Bottom -->
+<ins class="adsbygoogle" style="display:inline-block;width:336px;height:280px" data-ad-client="ca-pub-9465609616171866" data-ad-slot="4061219431"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<br>
+
+
+<h1><strong><a href="http://www.practice.geeksforgeeks.org/tags.php">Company Wise Coding Practice</a>
+   <a href="http://www.practice.geeksforgeeks.org/probtags.php">Topic Wise Coding Practice</a></strong></h1>
+
+		</div><div class="entry-content">
+			<p>Given two linked lists that represent two large positive numbers. Subtract the smaller number from larger one and return the difference as a linked list.  Note that the input lists may be in any order, but we always need to subtract smaller from larger one.</p>
+<p>It may be assumed that there are no extra leading zeros in input lists.</p>
+<p>Examples</p>
+<pre>
+Input  : l1 = 1 -&gt; 0 -&gt; 0 -&gt; NULL,  l2 = 1 -&gt; NULL
+Output : 0-&gt;9-&gt;9-&gt;NULL
+
+Input  : l1 = 1 -&gt; 0 -&gt; 0 -&gt; NULL,  l2 = 1 -&gt; NULL
+Output : 0-&gt;9-&gt;9-&gt;NULL
+
+Input  : l1 = 7-&gt; 8 -&gt; 6 -&gt; NULL,  l2 = 7 -&gt; 8 -&gt; 9 NULL
+Output : 3-&gt;NULL
+</pre>
+<div id="practice"></div>
+<p>Following are the steps.<br>
+1) Calculate sizes of given two linked lists.<br>
+2) If sizes not are same, then append zeros in smaller linked list.<br>
+3) If size are same, then follow below steps:<br>
+….a) Find the smaller valued linked list.<br>
+….b) One by one subtract nodes of smaller sized linked list from larger size. Keep track of borrow while subtracting.</p>
+<p>Following is C implementation of the above approach.</p>
+<pre class="brush: cpp; highlight: [53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147,148,149,150]; title: ; notranslate" title="">
+// C++ program to subtract smaller valued list from
+// larger valued list and return result as a list.
+#include&lt;bits/stdc++.h&gt;
+using namespace std;
+
+// A linked List Node
+struct Node
+{
+    int data;
+    struct Node* next;
+};
+
+// A utility which creates Node.
+Node* newNode(int data)
+{
+    Node* temp = new Node;
+    temp-&gt;data = data;
+    temp-&gt;next = NULL;
+    return temp;
+}
+
+/* A utility function to get length of linked list */
+int getLength(Node *Node)
+{
+    int size = 0;
+    while (Node != NULL)
+    {
+        Node = Node-&gt;next;
+        size++;
+    }
+    return size;
+}
+
+/* A Utility that padds zeros in front of the
+   Node, with the given diff */
+Node* paddZeros(Node* sNode, int diff)
+{
+    if (sNode == NULL)
+        return NULL;
+
+    Node* zHead = newNode(0);
+    diff--;
+    Node* temp = zHead;
+    while (diff--)
+    {
+        temp-&gt;next = newNode(0);
+        temp = temp-&gt;next;
+    }
+    temp-&gt;next = sNode;
+    return zHead;
+}
+
+/* Subtract LinkedList Helper is a recursive function,
+   move till the last Node,  and subtract the digits and
+   create the Node and return the Node. If d1 &lt; d2, we
+   borrow the number from previous digit. */
+Node* subtractLinkedListHelper(Node* l1, Node* l2, bool&amp; borrow)
+{
+    if (l1 == NULL &amp;&amp; l2 == NULL &amp;&amp; borrow == 0)
+        return NULL;
+
+    Node* previous = subtractLinkedListHelper(l1 ? l1-&gt;next : NULL,
+                                    l2 ? l2-&gt;next : NULL, borrow);
+
+    int d1 = l1-&gt;data;
+    int d2 = l2-&gt;data;
+    int sub = 0;
+
+    /* if you have given the value value to next digit then
+       reduce the d1 by 1 */
+    if (borrow)
+    {
+        d1--;
+        borrow = false;
+    }
+
+    /* If d1 &lt; d2 , then borrow the number from previous digit.
+       Add 10 to d1 and set borrow = true; */
+    if (d1 &lt; d2)
+    {
+        borrow = true;
+        d1 = d1 + 10;
+    }
+
+    /* subtract the digits */
+    sub = d1 - d2;
+
+    /* Create a Node with sub value */
+    Node* current = newNode(sub);
+
+    /* Set the Next pointer as Previous */
+    current-&gt;next = previous;
+
+    return current;
+}
+
+/* This API subtracts two linked lists and returns the
+   linked list which shall  have the subtracted result. */
+Node* subtractLinkedList(Node* l1, Node* l2)
+{
+    // Base Case.
+    if (l1 == NULL &amp;&amp;  l2 == NULL)
+        return NULL;
+
+    // In either of the case, get the lengths of both
+    // Linked list.
+    int len1 = getLength(l1);
+    int len2 = getLength(l2);
+
+    Node *lNode = NULL, *sNode = NULL;
+
+    Node* temp1 = l1;
+    Node* temp2 = l2;
+
+    // If lengths differ, calculate the smaller Node
+    // and padd zeros for smaller Node and ensure both
+    // larger Node and smaller Node has equal length.
+    if (len1 != len2)
+    {
+        lNode = len1 &gt; len2 ? l1 : l2;
+        sNode = len1 &gt; len2 ? l2 : l1;
+        sNode = paddZeros(sNode, abs(len1 - len2));
+    }
+
+    else
+    {
+        // If both list lengths are equal, then calculate
+        // the larger and smaller list. If 5-6-7 &amp; 5-6-8
+        // are linked list, then walk through linked list
+        // at last Node as 7 &lt; 8, larger Node is 5-6-8
+        // and smaller Node is 5-6-7.
+        while (l1 &amp;&amp; l2)
+        {
+            if (l1-&gt;data != l2-&gt;data)
+            {
+                lNode = l1-&gt;data &gt; l2-&gt;data ? temp1 : temp2;
+                sNode = l1-&gt;data &gt; l2-&gt;data ? temp2 : temp1;
+                break;
+            }
+            l1 = l1-&gt;next;
+            l2 = l2-&gt;next;
+        }
+    }
+
+    // After calculating larger and smaller Node, call
+    // subtractLinkedListHelper which returns the subtracted
+    // linked list.
+    bool borrow = false;
+    return subtractLinkedListHelper(lNode, sNode, borrow);
+}
+
+/* A utility function to print linked list */
+void printList(struct Node *Node)
+{
+    while (Node != NULL)
+    {
+        printf("%d ", Node-&gt;data);
+        Node = Node-&gt;next;
+    }
+    printf("\n");
+}
+
+// Driver program to test above functions
+int main()
+{
+    Node* head1 = newNode(1);
+    head1-&gt;next = newNode(0);
+    head1-&gt;next-&gt;next = newNode(0);
+
+    Node* head2 = newNode(1);
+
+    Node* result = subtractLinkedList(head1, head2);
+
+    printList(result);
+
+    return 0;
+}
+</pre>
+<p>Output :
+</p><pre>0 9 9</pre>
+<p>This article is contributed by <strong>Mu Ven</strong>. If you like GeeksforGeeks and would like to contribute, you can also write an article using <a href="http://contribute.geeksforgeeks.org/">contribute.geeksforgeeks.org</a> or mail your article to contribute@geeksforgeeks.org. See your article appearing on the GeeksforGeeks main page and help other Geeks.</p>
+<p>Please write comments if you find anything incorrect, or you want to share more information about the topic discussed above</p>
+
+			<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- Big Rectangle Blog Bottom -->
+<ins class="adsbygoogle" style="display:inline-block;width:336px;height:280px" data-ad-client="ca-pub-9465609616171866" data-ad-slot="4061219431"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<br>
+
+
+<h1><strong><a href="http://www.practice.geeksforgeeks.org/tags.php">Company Wise Coding Practice</a>
+   <a href="http://www.practice.geeksforgeeks.org/probtags.php">Topic Wise Coding Practice</a></strong></h1>
+
+		</div><div class="entry-content">
+			<p>Given two sorted singly linked lists having n and m elements each, merge them using constant space. First n smallest elements in both the lists should become part of first list and rest elements should be part of second list. Sorted order should be maintained. We are not allowed to change pointers of first linked list.</p>
+<p>For example,
+</p><pre>
+Input:
+First List: 2-&gt;4-&gt;7-&gt;8-&gt;10
+Second List: 1-&gt;3-&gt;12
+
+Output: 
+First List: 1-&gt;2-&gt;3-&gt;4-&gt;7
+Second List: 8-&gt;10-&gt;12
+</pre>
+<p><b>We strongly recommend you to minimize your browser and try this yourself first.</b></p>
+<p>The problem becomes very simple if we’re allowed to change pointers of first linked list. If we are allowed to change links, we can simply do something like merge of merge-sort algorithm. We assign first n smallest elements to the first linked list where n is the number of elements in first linked list and the rest to second linked list. We can achieve this in O(m + n) time and O(1) space, but this solution violates the requirement that we can’t change links of first list.</p>
+<p>The problem becomes a little tricky as we’re not allowed to change pointers in first linked list. The idea is something similar to <a href="http://www.geeksforgeeks.org/merge-two-sorted-arrays-o1-extra-space/">this</a> post but as we are given singly linked list, we can’t proceed backwards with the last element of LL2. </p>
+<p>The idea is for each element of LL1, we compare it with first element of LL2. If LL1 has a greater element than first element of LL2, then we swap the two elements involved. To keep LL2 sorted, we need to place first element of LL2 at its correct position. We can find mismatch by traversing LL2 once and correcting the pointers. </p>
+<p>Below is C++ implementation of this idea.</p>
+<pre class="brush: cpp; highlight: [33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74]; title: ; notranslate" title="">
+// Program to merge two sorted linked lists without
+// using any extra space and without changing links
+// of first list
+#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+ /* Structure for a linked list node */
+struct node
+{
+    int data;
+    struct node *next;
+};
+
+/* Given a reference (pointer to pointer) to the head
+  of a list and an int, push a new node on the front
+  of the list. */
+void push(struct node** head_ref, int new_data)
+{
+    /* allocate node */
+    struct node* new_node =
+        (struct node*) malloc(sizeof(struct node));
+
+    /* put in the data  */
+    new_node-&gt;data  = new_data;
+
+    /* link the old list off the new node */
+    new_node-&gt;next = (*head_ref);
+
+    /* move the head to point to the new node */
+    (*head_ref)    = new_node;
+}
+
+// Function to merge two sorted linked lists
+// LL1 and LL2 without using any extra space.
+void mergeLists(struct node *a, struct node * &amp;b)
+{
+    // run till either one of a or b runs out
+    while (a &amp;&amp; b)
+    {
+        // for each element of LL1,
+        // compare it with first element of LL2.
+        if (a-&gt;data &gt; b-&gt;data)
+        {
+            // swap the two elements involved
+            // if LL1 has a greater element
+            swap(a-&gt;data, b-&gt;data);
+
+            struct node *temp = b;
+
+            // To keep LL2 sorted, place first
+            // element of LL2 at its correct place
+            if (b-&gt;next &amp;&amp; b-&gt;data &gt; b-&gt;next-&gt;data)
+            {
+                b = b-&gt;next;
+                struct node *ptr= b, *prev = NULL;
+
+                // find mismatch by traversing the
+                // second linked list once
+                while (ptr &amp;&amp; ptr-&gt;data &lt; temp-&gt;data)
+                {
+                    prev = ptr;
+                    ptr = ptr -&gt; next;
+                }
+
+                // correct the pointers
+                prev-&gt;next = temp;
+                temp-&gt;next = ptr;
+            }
+        }
+
+        // move LL1 pointer to next element
+        a = a-&gt;next;
+    }
+}
+
+// Code to print the linked link
+void printList(struct node *head)
+{
+    while (head)
+    {
+        cout &lt;&lt; head-&gt;data &lt;&lt; "-&gt;" ;
+        head = head-&gt;next;
+    }
+    cout &lt;&lt; "NULL" &lt;&lt; endl;
+}
+
+// Driver code
+int main()
+{
+    struct node *a = NULL;
+    push(&amp;a, 10);
+    push(&amp;a, 8);
+    push(&amp;a, 7);
+    push(&amp;a, 4);
+    push(&amp;a, 2);
+
+    struct node *b = NULL;
+    push(&amp;b, 12);
+    push(&amp;b, 3);
+    push(&amp;b, 1);
+
+    mergeLists(a, b);
+
+    cout &lt;&lt; "First List: ";
+    printList(a);
+
+    cout &lt;&lt; "Second List: ";
+    printList(b);
+
+    return 0;
+}
+</pre>
+<p>Output :
+</p><pre>First List: 1-&gt;2-&gt;3-&gt;4-&gt;7-&gt;NULL
+Second List: 8-&gt;10-&gt;12-&gt;NULL
+</pre>
+<p>Time Complexity : O(mn)</p>
+<p>This article is contributed by <strong>Aditya Goel</strong>. Please write comments if you find anything incorrect, or you want to share more information about the topic discussed above</p>
+
+			<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- Big Rectangle Blog Bottom -->
+<ins class="adsbygoogle" style="display:inline-block;width:336px;height:280px" data-ad-client="ca-pub-9465609616171866" data-ad-slot="4061219431"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<br>
+
+
+<h1><strong><a href="http://www.practice.geeksforgeeks.org/tags.php">Company Wise Coding Practice</a>
+   <a href="http://www.practice.geeksforgeeks.org/probtags.php">Topic Wise Coding Practice</a></strong></h1>
+
+		</div><div class="entry-content">
+			<p>Given a list of integers, rearrange the list such that it consists of alternating minimum maximum elements <strong>using only list operations</strong>. The first element of the list should be minimum and second element should be maximum of all elements present in the list. Similarly, third element will be next minimum element and fourth element is next maximum element and so on. Use of extra space is not permitted.</p>
+<p>Examples:</p>
+<pre><strong>Input: </strong> [1 3 8 2 7 5 6 4]
+<strong>Output: </strong>[1 8 2 7 3 6 4 5]
+
+<strong>Input: </strong> [1 2 3 4 5 6 7]
+<strong>Output: </strong>[1 7 2 6 3 5 4]
+
+<strong>Input: </strong> [1 6 2 5 3 4]
+<strong>Output: </strong>[1 6 2 5 3 4]
+</pre>
+<p><!-- To show strongly recommend and practice link --></p>
+<div id="practice"></div>
+<p>The idea is to sort the list in ascending order first. Then we start popping elements from the end of the list and insert them into their correct position in the list.</p>
+<p>Below is C++ implementation of above idea –<br>
+</p><div class="responsive-tabs">
+<h2 class="tabtitle">C/C++</h2>
+<div class="tabcontent">
+
+<pre class="brush: cpp; highlight: [6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29]; title: ; notranslate" title="">
+// C++ program to rearrange a given list such that it
+// consists of alternating minimum maximum elements
+#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+// Function to rearrange a given list such that it
+// consists of alternating minimum maximum elements
+void alternateSort(list&lt;int&gt;&amp; inp)
+{
+    // sort the list in ascending order
+    inp.sort();
+
+    // get iterator to first element of the list
+    list&lt;int&gt;::iterator it = inp.begin();
+    it++;
+
+    for (int i=1; i&lt;(inp.size() + 1)/2; i++)
+    {
+        // pop last element (next greatest)
+        int val = inp.back();
+        inp.pop_back();
+
+        // insert it after next minimum element
+        inp.insert(it, val);
+
+        // increment the pointer for next pair
+        ++it;
+    }
+}
+
+// Driver code
+int main()
+{
+    // input list
+    list&lt;int&gt; inp({ 1, 3, 8, 2, 7, 5, 6, 4 });
+
+    // rearrange the given list
+    alternateSort(inp);
+
+    // print the modified list
+    for (int i : inp)
+        cout &lt;&lt; i &lt;&lt; " ";
+
+    return 0;
+}
+</pre>
+
+</div><h2 class="tabtitle">Java</h2>
+<div class="tabcontent">
+
+<pre class="brush: java; highlight: [5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22]; title: ; notranslate" title="">
+// Java program to rearrange a given list such that it
+// consists of alternating minimum maximum elements
+import java.util.*;
+
+class AlternateSort
+{
+	// Function to rearrange a given list such that it
+    // consists of alternating minimum maximum elements
+    // using LinkedList
+	public static void alternateSort(LinkedList&lt;Integer&gt; ll) 
+	{
+		Collections.sort(ll);
+		
+		for (int i = 1; i &lt; (ll.size() + 1)/2; i++)
+    	{
+    		Integer x = ll.getLast();
+    		ll.removeLast();
+    		ll.add(2*i - 1, x);
+		}
+		
+		System.out.println(ll);
+	}
+	
+	public static void main (String[] args) throws java.lang.Exception
+	{
+		// input list
+		Integer arr[] = {1, 3, 8, 2, 7, 5, 6, 4};
+		
+		// convert array to LinkedList
+        LinkedList&lt;Integer&gt; ll = new LinkedList&lt;Integer&gt;(Arrays.asList(arr));
+		
+		// rearrange the given list
+		alternateSort(ll);
+	}
+}
+</pre>
+<p></p></div></div><br>
+Output:
+<pre>1 8 2 7 3 6 4 5
+</pre>
+<p>This article is contributed by <strong>Aditya Goel</strong>. If you like GeeksforGeeks and would like to contribute, you can also write an article using <a href="http://www.contribute.geeksforgeeks.org">contribute.geeksforgeeks.org</a> or mail your article to contribute@geeksforgeeks.org. See your article appearing on the GeeksforGeeks main page and help other Geeks.</p>
+<p>Please write comments if you find anything incorrect, or you want to share more information about the topic discussed above.</p>
+
+			<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- Big Rectangle Blog Bottom -->
+<ins class="adsbygoogle" style="display:inline-block;width:336px;height:280px" data-ad-client="ca-pub-9465609616171866" data-ad-slot="4061219431"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<br>
+
+
+<h1><strong><a href="http://www.practice.geeksforgeeks.org/tags.php">Company Wise Coding Practice</a>
+   <a href="http://www.practice.geeksforgeeks.org/probtags.php">Topic Wise Coding Practice</a></strong></h1>
+
+		</div><div class="entry-content">
+			<p>Given K sorted linked lists of size N each, merge them and print the sorted output.</p>
+<p>Example:
+</p><pre>
+Input: k = 3, n =  4
+list1 = 1-&gt;3-&gt;5-&gt;7-&gt;NULL
+list2 = 2-&gt;4-&gt;6-&gt;8-&gt;NULL
+list3 = 0-&gt;9-&gt;10-&gt;11
+
+Output: 
+0-&gt;1-&gt;2-&gt;3-&gt;4-&gt;5-&gt;6-&gt;7-&gt;8-&gt;9-&gt;10-&gt;11</pre>
+<div id="practice"></div>
+<p> <br>
+</p><center><strong>Method 1 (Simple) </strong></center><br>
+A Simple Solution is to initialize result as first list.  Now traverse all lists starting from second list. Insert every node of currently traversed list into result in a sorted way.  Time complexity of this solution is O(N<sup>2</sup>) where N is total number of nodes, i.e., N = kn.
+<p> <br>
+</p><center><strong>Method 2 (Using Min Heap)</strong></center><br>
+A <strong>Better solution </strong>is to use Min Heap based solution which is discussed <a href="http://www.geeksforgeeks.org/merge-k-sorted-arrays/">here</a> for arrays.  Time complexity of this solution would be O(nk Log k)
+<p> <br>
+</p><center><strong>Method 3 (Using Divide and Conquer))</strong></center><br>
+In this post, <strong>Divide and Conquer</strong> approach is discussed.  This approach doesn’t require extra space for heap and works in O(nk Log k)
+<p>We already know that <a href="http://www.geeksforgeeks.org/merge-two-sorted-linked-lists/">merging of two linked lists</a> can be done in O(n) time and O(1) space (For arrays O(n) space is required). The idea is to pair up K lists and merge each pair in linear time using O(1) space. After first cycle, K/2 lists are left each of size 2*N. After second cycle, K/4 lists are left each of size 4*N and so on. We repeat the procedure until we have only one list left.  </p>
+<p>Below is C++ implementation of the above idea.</p>
+<pre class="brush: cpp; highlight: [52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78]; title: ; notranslate" title="">
+// C++ program to merge k sorted arrays of size n each
+#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+// A Linked List node
+struct Node
+{
+    int data;
+    Node* next;
+};
+
+/* Function to print nodes in a given linked list */
+void printList(Node* node)
+{
+    while (node != NULL)
+    {
+        printf("%d ", node-&gt;data);
+        node = node-&gt;next;
+    }
+}
+
+/* Takes two lists sorted in increasing order, and merge
+   their nodes together to make one big sorted list. Below
+   function takes O(Log n) extra space for recursive calls,
+   but it can be easily modified to work with same time and
+   O(1) extra space  */
+Node* SortedMerge(Node* a, Node* b)
+{
+    Node* result = NULL;
+
+    /* Base cases */
+    if (a == NULL)
+        return (b);
+    else if(b == NULL)
+        return (a);
+
+    /* Pick either a or b, and recur */
+    if(a-&gt;data &lt;= b-&gt;data)
+    {
+        result = a;
+        result-&gt;next = SortedMerge(a-&gt;next, b);
+    }
+    else
+    {
+        result = b;
+        result-&gt;next = SortedMerge(a, b-&gt;next);
+    }
+
+    return result;
+}
+
+// The main function that takes an array of lists
+// arr[0..last] and generates the sorted output
+Node* mergeKLists(Node* arr[], int last)
+{
+    // repeat until only one list is left
+    while (last != 0)
+    {
+        int i = 0, j = last;
+
+        // (i, j) forms a pair
+        while (i &lt; j)
+        {
+            // merge List i with List j and store
+            // merged list in List i
+            arr[i] = SortedMerge(arr[i], arr[j]);
+
+            // consider next pair
+            i++, j--;
+
+            // If all pairs are merged, update last
+            if (i &gt;= j)
+                last = j;
+        }
+    }
+
+    return arr[0];
+}
+
+// Utility function to create a new node.
+Node *newNode(int data)
+{
+    struct Node *temp = new Node;
+    temp-&gt;data = data;
+    temp-&gt;next = NULL;
+    return temp;
+}
+
+// Driver program to test above functions
+int main()
+{
+    int k = 3; // Number of linked lists
+    int n = 4; // Number of elements in each list
+
+    // an array of pointers storing the head nodes
+    // of the linked lists
+    Node* arr[k];
+
+    arr[0] = newNode(1);
+    arr[0]-&gt;next = newNode(3);
+    arr[0]-&gt;next-&gt;next = newNode(5);
+    arr[0]-&gt;next-&gt;next-&gt;next = newNode(7);
+
+    arr[1] = newNode(2);
+    arr[1]-&gt;next = newNode(4);
+    arr[1]-&gt;next-&gt;next = newNode(6);
+    arr[1]-&gt;next-&gt;next-&gt;next = newNode(8);
+
+    arr[2] = newNode(0);
+    arr[2]-&gt;next = newNode(9);
+    arr[2]-&gt;next-&gt;next = newNode(10);
+    arr[2]-&gt;next-&gt;next-&gt;next = newNode(11);
+
+    // Merge all lists
+    Node* head = mergeKLists(arr, k - 1);
+
+    printList(head);
+
+    return 0;
+}
+</pre>
+<p>Output :
+</p><pre>0 1 2 3 4 5 6 7 8 9 10 11 </pre>
+<p>Time Complexity of above algorithm is O(nk logk) as outer while loop in function mergeKLists() runs log k times and every time we are processing nk elements.  </p>
+<p>This article is contributed by <strong>Aditya Goel</strong>. If you like GeeksforGeeks and would like to contribute, you can also write an article and mail your article to contribute@geeksforgeeks.org. See your article appearing on the GeeksforGeeks main page and help other Geeks.</p>
+<p>Please write comments if you find anything incorrect, or you want to share more information about the topic discussed above</p>
+
+			<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- Big Rectangle Blog Bottom -->
+<ins class="adsbygoogle" style="display:inline-block;width:336px;height:280px" data-ad-client="ca-pub-9465609616171866" data-ad-slot="4061219431"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<br>
+
+
+<h1><strong><a href="http://www.practice.geeksforgeeks.org/tags.php">Company Wise Coding Practice</a>
+   <a href="http://www.practice.geeksforgeeks.org/probtags.php">Topic Wise Coding Practice</a></strong></h1>
+
+		</div><div class="entry-content">
+			<p>We have discussed <a href="http://www.geeksforgeeks.org/flatten-a-linked-list-with-next-and-child-pointers/">flattening of a multi-level linked list</a> where nodes have two pointers down and next. In the previous post, we flattened the linked list level wise. How to flatten a linked list when we always need to process down pointer before next at every node.</p>
+<pre>
+Input:  
+1 - 2 - 3 - 4
+    |
+    7 -  8 - 10 - 12
+    |    |    |
+    9    16   11
+    |    |
+    14   17 - 18 - 19 - 20
+    |                    |
+    15 - 23             21
+         |
+         24
+
+Output:		
+Linked List to be flattened to
+1 - 2 - 7 - 9 - 14 - 15 - 23 - 24 - 8
+ - 16 - 17 - 18 - 19 - 20 - 21 - 10 - 
+11 - 12 - 3 - 4
+Note : 9 appears before 8 (When we are 
+at a node, we process down pointer before 
+right pointer)	
+</pre>
+<p>Source : Oracle Interview</p>
+<p><!-- To show strongly recommend and practice link    --></p>
+<div id="practice"></div>
+<p>If we take a closer look, we can notice that this problem is similar to <a href="http://www.geeksforgeeks.org/convert-given-binary-tree-doubly-linked-list-set-3/">tree to linked list conversion</a>. We recursively flatten a linked list with following steps.</p>
+<p><strong>1)</strong> If node is NULL, return NULL.<br>
+<strong>2)</strong> Store next node of current node (used in step 4).<br>
+<strong>3)</strong> Recursively flatten down list.  While flattening, keep track of last visited node, so that the next list can be linked after it.<br>
+<strong>4)</strong> Recursively flatten next list (we get the next list from pointer stored in step 2) and attach it after last visited node.</p>
+<p>Below is C++ implementation of above idea.</p>
+<pre class="brush: cpp; highlight: [13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39]; title: ; notranslate" title="">
+// C++ program to flatten a multilevel linked list
+#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+// A Linked List Node
+struct Node
+{
+    int data;
+    struct Node *next;
+    struct Node *down;
+};
+
+// Flattens a multi-level linked list depth wise
+Node* flattenList(Node* node)
+{
+    // Base case
+    if (node == NULL)
+        return NULL;
+
+    // To keep track of last visited node
+    // (NOTE: This is static)
+    static Node *last;
+    last = node;
+
+    // Store next pointer
+    Node *next = node-&gt;next;
+
+    // If down list exists, process it first
+    // Add down list as next of current node
+    if (node-&gt;down)
+       node-&gt;next = flattenList(node-&gt;down);
+
+    // If next exists, add it after the next
+    // of last added node
+    if (next)
+       last-&gt;next = flattenList(next);
+
+    return node;
+}
+
+// Utility method to print a linked list
+void printFlattenNodes(Node* head)
+{
+    while (head)
+    {
+        printf("%d ", head-&gt;data);
+        head = head-&gt;next;
+    }
+}
+
+// Utility function to create a new node
+Node* newNode(int new_data)
+{
+    Node* new_node = new Node;
+    new_node-&gt;data = new_data;
+    new_node-&gt;next = new_node-&gt;down = NULL;
+    return new_node;
+}
+
+// Driver code
+int main()
+{
+    // Creating above example list
+    Node* head = newNode(1);
+    head-&gt;next = newNode(2);
+    head-&gt;next-&gt;next = newNode(3);
+    head-&gt;next-&gt;next-&gt;next = newNode(4);
+    head-&gt;next-&gt;down = newNode(7);
+    head-&gt;next-&gt;down-&gt;down = newNode(9);
+    head-&gt;next-&gt;down-&gt;down-&gt;down = newNode(14);
+    head-&gt;next-&gt;down-&gt;down-&gt;down-&gt;down
+                                     = newNode(15);
+    head-&gt;next-&gt;down-&gt;down-&gt;down-&gt;down-&gt;next
+                                     = newNode(23);
+    head-&gt;next-&gt;down-&gt;down-&gt;down-&gt;down-&gt;next-&gt;down
+                                      = newNode(24);
+    head-&gt;next-&gt;down-&gt;next = newNode(8);
+    head-&gt;next-&gt;down-&gt;next-&gt;down = newNode(16);
+    head-&gt;next-&gt;down-&gt;next-&gt;down-&gt;down = newNode(17);
+    head-&gt;next-&gt;down-&gt;next-&gt;down-&gt;down-&gt;next
+                                      = newNode(18);
+    head-&gt;next-&gt;down-&gt;next-&gt;down-&gt;down-&gt;next-&gt;next
+                                      = newNode(19);
+    head-&gt;next-&gt;down-&gt;next-&gt;down-&gt;down-&gt;next-&gt;next-&gt;next
+                                      = newNode(20);
+    head-&gt;next-&gt;down-&gt;next-&gt;down-&gt;down-&gt;next-&gt;next-&gt;next-&gt;down
+                                      = newNode(21);
+    head-&gt;next-&gt;down-&gt;next-&gt;next = newNode(10);
+    head-&gt;next-&gt;down-&gt;next-&gt;next-&gt;down = newNode(11);
+
+    head-&gt;next-&gt;down-&gt;next-&gt;next-&gt;next = newNode(12);
+
+    // Flatten list and print modified list
+    head = flattenList(head);
+    printFlattenNodes(head);
+
+    return 0;
+}
+</pre>
+<p>Output:</p>
+<pre>
+1 2 7 9 14 15 23 24 8 16 17 18 19 20 21 10 11 12 3 4 
+</pre>
+<p>This article is contributed by <strong>Mu Ven</strong>. If you like GeeksforGeeks and would like to contribute, you can also write an article using <a href="http://www.contribute.geeksforgeeks.org%20">contribute.geeksforgeeks.org</a> or mail your article to contribute@geeksforgeeks.org. See your article appearing on the GeeksforGeeks main page and help other Geeks.</p>
+<p>Please write comments if you find anything incorrect, or you want to share more information about the topic discussed above.</p>
+
+			<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- Big Rectangle Blog Bottom -->
+<ins class="adsbygoogle" style="display:inline-block;width:336px;height:280px" data-ad-client="ca-pub-9465609616171866" data-ad-slot="4061219431"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<br>
+
+
+<h1><strong><a href="http://www.practice.geeksforgeeks.org/tags.php">Company Wise Coding Practice</a>
+   <a href="http://www.practice.geeksforgeeks.org/probtags.php">Topic Wise Coding Practice</a></strong></h1>
+
+		</div><div class="entry-content">
+			<p>Given a singly linked list of 0s and 1s find its decimal equivalent.
+</p><pre>
+   Input  : 0-&gt;0-&gt;0-&gt;1-&gt;1-&gt;0-&gt;0-&gt;1-&gt;0
+   Output : 50   
+
+   Input  : 1-&gt;0-&gt;0
+   Output : 4</pre>
+<p>Decimal Value of an empty linked list is considered as 0.</p>
+<div id="practice"></div>
+<p>Initialize result as 0.  Traverse the linked list and for each node, multiply the result by 2 and add node’s data to it.</p>
+<pre class="brush: cpp; highlight: [13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30]; title: ; notranslate" title="">
+// C++ Program to find decimal value of
+// binary linked list
+#include&lt;iostream&gt;
+using namespace std;
+
+/* Link list Node */
+struct Node
+{
+    bool data;
+    struct Node* next;
+};
+
+/* Returns decimal value of binary linked list */
+int decimalValue(struct Node *head)
+{
+    // Initialized result
+    int  res = 0;
+
+    // Traverse linked list
+    while (head != NULL)
+    {
+        // Multiply result by 2 and add
+        // head's data
+        res = (res  &lt;&lt; 1) + head-&gt;data;
+
+        // Move next
+        head = head-&gt;next;
+    }
+    return res;
+}
+
+// Utility function to create a new node.
+Node *newNode(bool data)
+{
+    struct Node *temp = new Node;
+    temp-&gt;data = data;
+    temp-&gt;next = NULL;
+    return temp;
+}
+
+/* Drier program to test above function*/
+int main()
+{
+    /* Start with the empty list */
+    struct Node* head = newNode(1);
+    head-&gt;next = newNode(0);
+    head-&gt;next-&gt;next = newNode(1);
+    head-&gt;next-&gt;next-&gt;next = newNode(1);
+
+    cout &lt;&lt; "Decimal value is "
+         &lt;&lt; decimalValue(head);
+
+    return 0;
+}
+</pre>
+<p>Output :
+</p><pre>Decimal value is 11</pre>
+<div id="company_tags"></div>
+<p><iframe width="665" height="374" src="https://www.youtube.com/embed/k9x5UjTYi5I?feature=oembed" frameborder="0" allowfullscreen></iframe></p>
+<p>This article is contributed by <strong>Shivam Gupta</strong>. If you like GeeksforGeeks and would like to contribute, you can also write an article and mail your article to contribute@geeksforgeeks.org. See your article appearing on the GeeksforGeeks main page and help other Geeks.</p>
+<p>Please write comments if you find anything incorrect, or you want to share more information about the topic discussed above.</p>
+
+			<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- Big Rectangle Blog Bottom -->
+<ins class="adsbygoogle" style="display:inline-block;width:336px;height:280px" data-ad-client="ca-pub-9465609616171866" data-ad-slot="4061219431"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<br>
+
+
+<h1><strong><a href="http://www.practice.geeksforgeeks.org/tags.php">Company Wise Coding Practice</a>
+   <a href="http://www.practice.geeksforgeeks.org/probtags.php">Topic Wise Coding Practice</a></strong></h1>
+
+		</div><div class="entry-content">
+			<p>Given a singly linked list, find if the linked list is <a href="http://geeksquiz.com/circular-linked-list/">circular</a> or not.  A linked list is called circular if it not NULL terminated and all nodes are connected in the form of a cycle.  Below is an example of circular linked list.</p>
+<p><a href="http://geeksforgeeks.org/wp-content/uploads/cll_inserted.gif"><img src="http://geeksforgeeks.org/wp-content/uploads/cll_inserted.gif" alt="" title="cll" class="aligncenter size-full wp-image-10918" height="84" width="500"></a></p>
+<p>An empty linked list is considered as circular.</p>
+<p>Note  that this problem is different from <a href="http://www.practice.geeksforgeeks.org/problem-page.php?pid=700099">cycle detection problem</a>, here all nodes have to be part of cycle.</p>
+<div id="practice"></div>
+<p>The idea is to store head of the linked list and traverse it.  If we reach NULL, linked list is not circular.  If reach head again, linked list is circular.</p>
+<pre class="brush: cpp; highlight: [12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31]; title: ; notranslate" title="">
+// C++ program to check if linked list is circular
+#include&lt;bits/stdc++.h&gt;
+using namespace std;
+
+/* Link list Node */
+struct Node
+{
+    int data;
+    struct Node* next;
+};
+
+/* This function returns true if given linked
+   list is circular, else false. */
+bool isCircular(struct Node *head)
+{
+    // An empty linked list is circular
+    if (head == NULL)
+       return true;
+
+    // Next of head
+    struct Node *node = head-&gt;next;
+
+    // This loop would stope in both cases (1) If
+    // Circular (2) Not circular
+    while (node != NULL &amp;&amp; node != head)
+       node = node-&gt;next;
+
+    // If loop stopped because of circular
+    // condition
+    return (node == head);
+}
+
+// Utility function to create a new node.
+Node *newNode(int data)
+{
+    struct Node *temp = new Node;
+    temp-&gt;data = data;
+    temp-&gt;next = NULL;
+    return temp;
+}
+
+/* Drier program to test above function*/
+int main()
+{
+    /* Start with the empty list */
+    struct Node* head = newNode(1);
+    head-&gt;next = newNode(2);
+    head-&gt;next-&gt;next = newNode(3);
+    head-&gt;next-&gt;next-&gt;next = newNode(4);
+
+    isCircular(head)? cout &lt;&lt; "Yes\n" :
+                      cout &lt;&lt; "No\n" ;
+
+    // Making linked list circular
+    head-&gt;next-&gt;next-&gt;next-&gt;next = head;
+
+    isCircular(head)? cout &lt;&lt; "Yes\n" :
+                      cout &lt;&lt; "No\n" ;
+
+    return 0;
+}
+</pre>
+<p>Output :
+</p><pre>No
+Yes</pre>
+<div id="company_tags"></div>
+<p><iframe width="665" height="374" src="https://www.youtube.com/embed/ce2rnhkNLzU?feature=oembed" frameborder="0" allowfullscreen></iframe></p>
+<p>This article is contributed by <strong>Shivam Gupta</strong>. If you like GeeksforGeeks and would like to contribute, you can also write an article and mail your article to contribute@geeksforgeeks.org. See your article appearing on the GeeksforGeeks main page and help other Geeks.</p>
+<p>Please write comments if you find anything incorrect, or you want to share more information about the topic discussed above</p>
+
+			<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- Big Rectangle Blog Bottom -->
+<ins class="adsbygoogle" style="display:inline-block;width:336px;height:280px" data-ad-client="ca-pub-9465609616171866" data-ad-slot="4061219431"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<br>
+
+
+<h1><strong><a href="http://www.practice.geeksforgeeks.org/tags.php">Company Wise Coding Practice</a>
+   <a href="http://www.practice.geeksforgeeks.org/probtags.php">Topic Wise Coding Practice</a></strong></h1>
+
+		</div><div class="entry-content">
+			<p>Given a ternary tree, create a doubly linked list out of it. A ternary tree is just like binary tree but instead of having two nodes, it has three nodes i.e. left, middle, right.</p>
+<p>The doubly linked list should holds following properties –</p>
+<ol>
+<li> Left pointer of ternary tree should act as prev pointer of doubly linked list. </li>
+<li> Middle pointer of ternary tree should not point to anything.</li>
+<li> Right pointer of ternary tree should act as next pointer of doubly linked list.</li>
+<li> Each node of ternary tree is inserted into doubly linked list before its subtrees and for any node, its left child will be inserted first, followed by mid and right child (if any).</li>
+</ol>
+<p>For the above example, the linked list formed for below tree should be NULL  5  1  4  8  11  6  7  15  63  31  55  65 -&gt; NULL </p>
+<p><a href="http://d1gjlxt8vb0knt.cloudfront.net//wp-content/uploads/tree.jpg"><img src="http://d1gjlxt8vb0knt.cloudfront.net//wp-content/uploads/tree.jpg" alt="tree" width="867" height="370" class="aligncenter size-full wp-image-137973"></a></p>
+<p><b>We strongly recommend you to minimize your browser and try this yourself first.</b></p>
+<p>The idea is to traverse the tree in preoder fashion similar to binary tree preorder traversal. Here, when we visit a node, we will insert it into doubly linked list in the end using a tail pointer. That we use to maintain the required insertion order. We then recursively call for left child, middle child and right child in that order.</p>
+<p>Below is C++ implementation of this idea.</p>
+<pre class="brush: cpp; highlight: [54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83]; title: ; notranslate" title="">
+// C++ program to create a doubly linked list out
+// of given a ternary tree.
+#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+/* A ternary tree */
+struct Node
+{
+    int data;
+    struct Node *left, *middle, *right;
+};
+
+/* Helper function that allocates a new node with the
+   given data and assign NULL to left, middle and right
+   pointers.*/
+Node* newNode(int data)
+{
+    Node* node = new Node;
+    node-&gt;data = data;
+    node-&gt;left = node-&gt;middle = node-&gt;right = NULL;
+    return node;
+}
+
+/* Utility function that constructs doubly linked list
+by inserting current node at the end of the doubly
+linked list by using a tail pointer */
+void push(Node** tail_ref, Node* node)
+{
+    // initilize tail pointer
+    if (*tail_ref == NULL)
+    {
+        *tail_ref = node;
+
+        // set left, middle and right child to point
+        // to NULL
+        node-&gt;left = node-&gt;middle = node-&gt;right = NULL;
+
+        return;
+    }
+
+    // insert node in the end using tail pointer
+    (*tail_ref)-&gt;right = node;
+
+    // set prev of node
+    node-&gt;left = (*tail_ref);
+
+    // set middle and right child to point to NULL
+    node-&gt;right = node-&gt;middle = NULL;
+
+    // now tail pointer will point to inserted node
+    (*tail_ref) = node;
+}
+
+/* Create a doubly linked list out of given a ternary tree.
+by traversing the tree in preoder fashion. */
+Node* TernaryTreeToList(Node* root, Node** head_ref)
+{
+    // Base case
+    if (root == NULL)
+        return NULL;
+
+    //create a static tail pointer
+    static Node* tail = NULL;
+
+    // store left, middle and right nodes
+    // for future calls.
+    Node* left = root-&gt;left;
+    Node* middle = root-&gt;middle;
+    Node* right = root-&gt;right;
+
+    // set head of the doubly linked list
+    // head will be root of the ternary tree
+    if (*head_ref == NULL)
+        *head_ref = root;
+
+    // push current node in the end of DLL
+    push(&amp;tail, root);
+
+    //recurse for left, middle and right child
+    TernaryTreeToList(left, head_ref);
+    TernaryTreeToList(middle, head_ref);
+    TernaryTreeToList(right, head_ref);
+}
+
+// Utility function for printing double linked list.
+void printList(Node* head)
+{
+    printf("Created Double Linked list is:\n");
+    while (head)
+    {
+        printf("%d ", head-&gt;data);
+        head = head-&gt;right;
+    }
+}
+
+// Driver program to test above functions
+int main()
+{
+    // Construting ternary tree as shown in above figure
+    Node* root = newNode(30);
+
+    root-&gt;left = newNode(5);
+    root-&gt;middle = newNode(11);
+    root-&gt;right = newNode(63);
+
+    root-&gt;left-&gt;left = newNode(1);
+    root-&gt;left-&gt;middle = newNode(4);
+    root-&gt;left-&gt;right = newNode(8);
+
+    root-&gt;middle-&gt;left = newNode(6);
+    root-&gt;middle-&gt;middle = newNode(7);
+    root-&gt;middle-&gt;right = newNode(15);
+
+    root-&gt;right-&gt;left = newNode(31);
+    root-&gt;right-&gt;middle = newNode(55);
+    root-&gt;right-&gt;right = newNode(65);
+
+    Node* head = NULL;
+
+    TernaryTreeToList(root, &amp;head);
+
+    printList(head);
+
+    return 0;
+}
+</pre>
+<p>Output:
+</p><pre>Created Double Linked list is:
+30 5 1 4 8 11 6 7 15 63 31 55 65 
+</pre>
+<p>This article is contributed by <strong>Aditya Goel</strong>. If you like GeeksforGeeks and would like to contribute, you can also write an article and mail your article to contribute@geeksforgeeks.org. See your article appearing on the GeeksforGeeks main page and help other Geeks.</p>
+<p>Please write comments if you find anything incorrect, or you want to share more information about the topic discussed above</p>
+
+			<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- Big Rectangle Blog Bottom -->
+<ins class="adsbygoogle" style="display:inline-block;width:336px;height:280px" data-ad-client="ca-pub-9465609616171866" data-ad-slot="4061219431"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<br>
+
+
+<h1><strong><a href="http://www.practice.geeksforgeeks.org/tags.php">Company Wise Coding Practice</a>
+   <a href="http://www.practice.geeksforgeeks.org/probtags.php">Topic Wise Coding Practice</a></strong></h1>
+
+		</div><div class="entry-content">
+			<p>Given a singly linked list, delete middle  of the linked list. For example, if given linked list is 1-&gt;2-&gt;3-&gt;4-&gt;5 then linked list should be modified to 1-&gt;2-&gt;4-&gt;5</p>
+<p>If there are even nodes, then there would be two middle nodes, we need to delete the second middle element. For example, if given linked list is 1-&gt;2-&gt;3-&gt;4-&gt;5-&gt;6 then it should be modified to 1-&gt;2-&gt;3-&gt;5-&gt;6.</p>
+<p>If the input linked list is NULL, then it should remain NULL.</p>
+<p>If the input linked list has 1 node, then this node should be deleted and new head should be returned.</p>
+<div id="practice"></div>
+<p>A Simple Solution is to first count number of nodes in linked list, then delete n/2’th node using the simple deletion process.  </p>
+<p>The above solution requires two traversals of linked list.  We can delete middle node using one traversal.  The idea is to use two pointers, slow_ptr and fast_ptr.  Both pointers start from head of list.  When fast_ptr reaches end, slow_ptr reaches middle. This idea is same as the one used in method 2 of <a href="http://www.geeksforgeeks.org/write-a-c-function-to-print-the-middle-of-the-linked-list/">this</a> post.  The additional thing in this post is to keep track of previous of middle so that we can delete middle.</p>
+<p>Below is C++ implementation.</p>
+<pre class="brush: cpp; highlight: [12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44]; title: ; notranslate" title="">
+// C++ program to delete middle of a linked list
+#include&lt;bits/stdc++.h&gt;
+using namespace std;
+
+/* Link list Node */
+struct Node
+{
+    int data;
+    struct Node* next;
+};
+
+// Deletes middle node and returns head of the
+// modified list
+struct Node* deleteMid(struct Node *head)
+{
+    // Base cases
+    if (head == NULL)
+        return NULL;
+    if (head-&gt;next == NULL)
+    {
+        delete head;
+        return NULL;
+    }
+
+    // Initialize slow and fast pointers to reach
+    // middle of linked list
+    struct Node *slow_ptr = head;
+    struct Node *fast_ptr = head;
+
+    // Find the middle and previous of middle.
+    struct Node *prev; // To store previous of slow_ptr
+    while (fast_ptr != NULL &amp;&amp; fast_ptr-&gt;next != NULL)
+    {
+        fast_ptr = fast_ptr-&gt;next-&gt;next;
+        prev = slow_ptr;
+        slow_ptr = slow_ptr-&gt;next;
+    }
+
+    //Delete the middle node
+    prev-&gt;next = slow_ptr-&gt;next;
+    delete slow_ptr;
+
+    return head;
+}
+
+// A utility function to print a given linked list
+void printList(struct Node *ptr)
+{
+    while (ptr != NULL)
+    {
+        cout &lt;&lt; ptr-&gt;data &lt;&lt; "-&gt;";
+        ptr = ptr-&gt;next;
+    }
+    cout &lt;&lt; "NULL\n";
+}
+
+// Utility function to create a new node.
+Node *newNode(int data)
+{
+    struct Node *temp = new Node;
+    temp-&gt;data = data;
+    temp-&gt;next = NULL;
+    return temp;
+}
+
+/* Drier program to test above function*/
+int main()
+{
+    /* Start with the empty list */
+    struct Node* head = newNode(1);
+    head-&gt;next = newNode(2);
+    head-&gt;next-&gt;next = newNode(3);
+    head-&gt;next-&gt;next-&gt;next = newNode(4);
+
+    cout &lt;&lt; "Gven Linked List\n";
+    printList(head);
+
+    head = deleteMid(head);
+
+    cout &lt;&lt; "Linked List after deletion of middle\n";
+    printList(head);
+
+    return 0;
+}
+</pre>
+<p>Output :
+</p><pre>Gven Linked List
+1-&gt;2-&gt;3-&gt;4-&gt;NULL
+Linked List after deletion of middle
+1-&gt;2-&gt;4-&gt;NULL
+</pre>
+<div id="company_tags"></div>
+<p>This article is contributed by <strong>Piyush Gupta</strong>. If you like GeeksforGeeks and would like to contribute, you can also write an article and mail your article to contribute@geeksforgeeks.org. See your article appearing on the GeeksforGeeks main page and help other Geeks.</p>
+<p>Please write comments if you find anything incorrect, or you want to share more information about the topic discussed above</p>
+
+			<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- Big Rectangle Blog Bottom -->
+<ins class="adsbygoogle" style="display:inline-block;width:336px;height:280px" data-ad-client="ca-pub-9465609616171866" data-ad-slot="4061219431"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<br>
+
+
+<h1><strong><a href="http://www.practice.geeksforgeeks.org/tags.php">Company Wise Coding Practice</a>
+   <a href="http://www.practice.geeksforgeeks.org/probtags.php">Topic Wise Coding Practice</a></strong></h1>
+
+		</div><div class="entry-content">
+			<p>Like array and linked list, unrolled Linked List is also a linear data structure and is a variant of linked list. Unlike simple linked list, it stores multiple elements at each node. That is, instead of storing single element at a node, unrolled linked lists store an array of elements at a node. Unrolled linked list covers advantages of both array and linked list as it reduces the memory overhead in comparison to simple linked lists by storing multiple elements at each node and it also has the advantage of fast insertion and deletion as that of a linked list.</p>
+<p><a href="http://d1gjlxt8vb0knt.cloudfront.net//wp-content/uploads/unrolledLinkedList.png"><img src="http://d1gjlxt8vb0knt.cloudfront.net//wp-content/uploads/unrolledLinkedList.png" alt="unrolledlinkedlist" width="508" height="304" class="aligncenter size-full wp-image-139471"></a></p>
+<p><strong>Advantages:</strong></p>
+<ul>
+<li>Because of the Cache behavior, linear search is much faster in unrolled linked lists.</li>
+<li>In comparison to ordinary linked list, it requires less storage space for pointers/references.</li>
+<li>It performs operations like insertion, deletion and traversal more quickly than ordinary linked lists (because search is faster). </li>
+</ul>
+<p><strong>Disadvantages:</strong></p>
+<ul>
+<li>The overhead per node is comparatively high than singly linked lists. Refer an example node in below code.  </li>
+</ul>
+<p><strong>Simple Implementation in C</strong><br>
+The below program creates a simple unrolled linked list with 3 nodes containing variable number of elements in each.  It also traverses the created list.</p>
+<pre class="brush: cpp; title: ; notranslate" title="">
+// C program to implement unrolled linked list
+// and traversing it.
+#include&lt;stdio.h&gt;
+#include&lt;stdlib.h&gt;
+#define maxElements 4
+
+// Unrolled Linked List Node
+struct Node
+{
+    int numElements;
+    int array[maxElements];
+    struct Node *next;
+};
+
+/* Function to traverse am unrolled linked list
+   and print all the elements*/
+void printUnrolledList(struct Node *n)
+{
+    while (n != NULL)
+    {
+        // Print elements in current node
+        for (int i=0; i&lt;n-&gt;numElements; i++)
+            printf("%d ", n-&gt;array[i]);
+
+        // Move to next node 
+        n = n-&gt;next;
+    }
+}
+
+// Program to create an unrolled linked list
+// with 3 Nodes
+int main()
+{
+    struct Node* head = NULL;
+    struct Node* second = NULL;
+    struct Node* third = NULL;
+
+    // allocate 3 Nodes
+    head = (struct Node*)malloc(sizeof(struct Node));
+    second = (struct Node*)malloc(sizeof(struct Node));
+    third = (struct Node*)malloc(sizeof(struct Node));
+
+    // Let us put some values in second node (Number
+    // of values must be less than or equal to
+    // maxElement)
+    head-&gt;numElements = 3;
+    head-&gt;array[0] = 1;
+    head-&gt;array[1] = 2;
+    head-&gt;array[2] = 3;
+
+    // Link first Node with the second Node
+    head-&gt;next = second;
+
+    // Let us put some values in second node (Number
+    // of values must be less than or equal to
+    // maxElement)
+    second-&gt;numElements = 3;
+    second-&gt;array[0] = 4;
+    second-&gt;array[1] = 5;
+    second-&gt;array[2] = 6;
+
+    // Link second Node with the third Node
+    second-&gt;next = third;
+
+    // Let us put some values in third node (Number
+    // of values must be less than or equal to
+    // maxElement)
+    third-&gt;numElements = 3;
+    third-&gt;array[0] = 7;
+    third-&gt;array[1] = 8;
+    third-&gt;array[2] = 9;
+    third-&gt;next = NULL;
+
+    printUnrolledList(head);
+
+    return 0;
+}
+</pre>
+<p>Output:</p>
+<pre>
+1 2 3 4 5 6 7 8 9
+</pre>
+<p>In this article, we have introduced unrolled list and advantages of it.  We have also shown how to traverse the list.  In the next article, we will be discussing insertion, deletion and values of maxElements/numElements in detail.</p>
+<p>This article is contributed by <a href="https://www.facebook.com/harsh.agarwal.16752" style="color: #008000"><strong>Harsh Agarwal</strong></a>. If you like GeeksforGeeks and would like to contribute, you can also write an article using <a href="http://www.contribute.geeksforgeeks.org">contribute.geeksforgeeks.org</a> or mail your article to contribute@geeksforgeeks.org. See your article appearing on the GeeksforGeeks main page and help other Geeks.</p>
+<p>Please write comments if you find anything incorrect, or you want to share more information about the topic discussed above.</p>
+
+			<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- Big Rectangle Blog Bottom -->
+<ins class="adsbygoogle" style="display:inline-block;width:336px;height:280px" data-ad-client="ca-pub-9465609616171866" data-ad-slot="4061219431"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<br>
+
+
+<h1><strong><a href="http://www.practice.geeksforgeeks.org/tags.php">Company Wise Coding Practice</a>
+   <a href="http://www.practice.geeksforgeeks.org/probtags.php">Topic Wise Coding Practice</a></strong></h1>
+
+		</div><div class="entry-content">
+			<p>Given two linked lists that represent two large positive numbers. Subtract the smaller number from larger one and return the difference as a linked list.  Note that the input lists may be in any order, but we always need to subtract smaller from larger one.</p>
+<p>It may be assumed that there are no extra leading zeros in input lists.</p>
+<p>Examples</p>
+<pre>
+Input  : l1 = 1 -&gt; 0 -&gt; 0 -&gt; NULL,  l2 = 1 -&gt; NULL
+Output : 0-&gt;9-&gt;9-&gt;NULL
+
+Input  : l1 = 1 -&gt; 0 -&gt; 0 -&gt; NULL,  l2 = 1 -&gt; NULL
+Output : 0-&gt;9-&gt;9-&gt;NULL
+
+Input  : l1 = 7-&gt; 8 -&gt; 6 -&gt; NULL,  l2 = 7 -&gt; 8 -&gt; 9 NULL
+Output : 3-&gt;NULL
+</pre>
+<div id="practice"></div>
+<p>Following are the steps.<br>
+1) Calculate sizes of given two linked lists.<br>
+2) If sizes not are same, then append zeros in smaller linked list.<br>
+3) If size are same, then follow below steps:<br>
+….a) Find the smaller valued linked list.<br>
+….b) One by one subtract nodes of smaller sized linked list from larger size. Keep track of borrow while subtracting.</p>
+<p>Following is C implementation of the above approach.</p>
+<pre class="brush: cpp; highlight: [53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147,148,149,150]; title: ; notranslate" title="">
+// C++ program to subtract smaller valued list from
+// larger valued list and return result as a list.
+#include&lt;bits/stdc++.h&gt;
+using namespace std;
+
+// A linked List Node
+struct Node
+{
+    int data;
+    struct Node* next;
+};
+
+// A utility which creates Node.
+Node* newNode(int data)
+{
+    Node* temp = new Node;
+    temp-&gt;data = data;
+    temp-&gt;next = NULL;
+    return temp;
+}
+
+/* A utility function to get length of linked list */
+int getLength(Node *Node)
+{
+    int size = 0;
+    while (Node != NULL)
+    {
+        Node = Node-&gt;next;
+        size++;
+    }
+    return size;
+}
+
+/* A Utility that padds zeros in front of the
+   Node, with the given diff */
+Node* paddZeros(Node* sNode, int diff)
+{
+    if (sNode == NULL)
+        return NULL;
+
+    Node* zHead = newNode(0);
+    diff--;
+    Node* temp = zHead;
+    while (diff--)
+    {
+        temp-&gt;next = newNode(0);
+        temp = temp-&gt;next;
+    }
+    temp-&gt;next = sNode;
+    return zHead;
+}
+
+/* Subtract LinkedList Helper is a recursive function,
+   move till the last Node,  and subtract the digits and
+   create the Node and return the Node. If d1 &lt; d2, we
+   borrow the number from previous digit. */
+Node* subtractLinkedListHelper(Node* l1, Node* l2, bool&amp; borrow)
+{
+    if (l1 == NULL &amp;&amp; l2 == NULL &amp;&amp; borrow == 0)
+        return NULL;
+
+    Node* previous = subtractLinkedListHelper(l1 ? l1-&gt;next : NULL,
+                                    l2 ? l2-&gt;next : NULL, borrow);
+
+    int d1 = l1-&gt;data;
+    int d2 = l2-&gt;data;
+    int sub = 0;
+
+    /* if you have given the value value to next digit then
+       reduce the d1 by 1 */
+    if (borrow)
+    {
+        d1--;
+        borrow = false;
+    }
+
+    /* If d1 &lt; d2 , then borrow the number from previous digit.
+       Add 10 to d1 and set borrow = true; */
+    if (d1 &lt; d2)
+    {
+        borrow = true;
+        d1 = d1 + 10;
+    }
+
+    /* subtract the digits */
+    sub = d1 - d2;
+
+    /* Create a Node with sub value */
+    Node* current = newNode(sub);
+
+    /* Set the Next pointer as Previous */
+    current-&gt;next = previous;
+
+    return current;
+}
+
+/* This API subtracts two linked lists and returns the
+   linked list which shall  have the subtracted result. */
+Node* subtractLinkedList(Node* l1, Node* l2)
+{
+    // Base Case.
+    if (l1 == NULL &amp;&amp;  l2 == NULL)
+        return NULL;
+
+    // In either of the case, get the lengths of both
+    // Linked list.
+    int len1 = getLength(l1);
+    int len2 = getLength(l2);
+
+    Node *lNode = NULL, *sNode = NULL;
+
+    Node* temp1 = l1;
+    Node* temp2 = l2;
+
+    // If lengths differ, calculate the smaller Node
+    // and padd zeros for smaller Node and ensure both
+    // larger Node and smaller Node has equal length.
+    if (len1 != len2)
+    {
+        lNode = len1 &gt; len2 ? l1 : l2;
+        sNode = len1 &gt; len2 ? l2 : l1;
+        sNode = paddZeros(sNode, abs(len1 - len2));
+    }
+
+    else
+    {
+        // If both list lengths are equal, then calculate
+        // the larger and smaller list. If 5-6-7 &amp; 5-6-8
+        // are linked list, then walk through linked list
+        // at last Node as 7 &lt; 8, larger Node is 5-6-8
+        // and smaller Node is 5-6-7.
+        while (l1 &amp;&amp; l2)
+        {
+            if (l1-&gt;data != l2-&gt;data)
+            {
+                lNode = l1-&gt;data &gt; l2-&gt;data ? temp1 : temp2;
+                sNode = l1-&gt;data &gt; l2-&gt;data ? temp2 : temp1;
+                break;
+            }
+            l1 = l1-&gt;next;
+            l2 = l2-&gt;next;
+        }
+    }
+
+    // After calculating larger and smaller Node, call
+    // subtractLinkedListHelper which returns the subtracted
+    // linked list.
+    bool borrow = false;
+    return subtractLinkedListHelper(lNode, sNode, borrow);
+}
+
+/* A utility function to print linked list */
+void printList(struct Node *Node)
+{
+    while (Node != NULL)
+    {
+        printf("%d ", Node-&gt;data);
+        Node = Node-&gt;next;
+    }
+    printf("\n");
+}
+
+// Driver program to test above functions
+int main()
+{
+    Node* head1 = newNode(1);
+    head1-&gt;next = newNode(0);
+    head1-&gt;next-&gt;next = newNode(0);
+
+    Node* head2 = newNode(1);
+
+    Node* result = subtractLinkedList(head1, head2);
+
+    printList(result);
+
+    return 0;
+}
+</pre>
+<p>Output :
+</p><pre>0 9 9</pre>
+<p>This article is contributed by <strong>Mu Ven</strong>. If you like GeeksforGeeks and would like to contribute, you can also write an article using <a href="http://contribute.geeksforgeeks.org/">contribute.geeksforgeeks.org</a> or mail your article to contribute@geeksforgeeks.org. See your article appearing on the GeeksforGeeks main page and help other Geeks.</p>
+<p>Please write comments if you find anything incorrect, or you want to share more information about the topic discussed above</p>
+
+			<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- Big Rectangle Blog Bottom -->
+<ins class="adsbygoogle" style="display:inline-block;width:336px;height:280px" data-ad-client="ca-pub-9465609616171866" data-ad-slot="4061219431"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<br>
+
+
+<h1><strong><a href="http://www.practice.geeksforgeeks.org/tags.php">Company Wise Coding Practice</a>
+   <a href="http://www.practice.geeksforgeeks.org/probtags.php">Topic Wise Coding Practice</a></strong></h1>
+
+		</div><div class="entry-content">
+			<p>Given a Binary Tree, convert it to a Circular Doubly Linked List (In-Place).</p>
+<ul>
+<li>The left and right pointers in nodes are to be used as previous and next pointers respectively in converted Circular Linked List.</li>
+<li>The order of nodes in List must be same as Inorder of the given Binary Tree.</li>
+<li>The first node of Inorder traversal must be head node of the Circular List.</li>
+</ul>
+<p><strong>Example:</strong><br>
+<a href="http://d1gjlxt8vb0knt.cloudfront.net//wp-content/uploads/tree-to-list.png"><img class="aligncenter size-full wp-image-139076" src="http://d1gjlxt8vb0knt.cloudfront.net//wp-content/uploads/tree-to-list.png" alt="tree to list" width="873" height="534"></a></p>
+<div id="practice"> </div>
+<p>The idea can be described using below steps.<br>
+1) Write a general purpose function that concatenates two given circular doubly lists (This function is explained below).<br>
+2) Now traverse the given tree<br>
+….a) Recursively convert left subtree to a circular DLL.  Let the converted list be leftList.<br>
+….a) Recursively convert right subtree to a circular DLL.   Let the converted list be rightList.<br>
+….c) Make a circular linked list of root of the tree, make left and right of root to point to itself.<br>
+….d) Concatenate leftList with list of single root node.<br>
+….e) Concatenate the list produced in step above (d) with rightList.</p>
+<p>Note that the above code traverses tree in Postorder fashion.  We can traverse in inorder fashion also. We can first concatenate left subtree and root, then recur for right subtree and concatenate the result with left-root concatenation.</p>
+<p><strong>How to Concatenate two circular DLLs?</strong></p>
+<ul>
+<li>Get the last node of the left list. Retrieving the last node is an O(1) operation, since the prev pointer of the head points to the last node of the list.</li>
+<li>Connect it with the first node of the right list</li>
+<li>Get the last node of the second list</li>
+<li>Connect it with the head of the list.</li>
+</ul>
+<p>Below are implementations of above idea.</p>
+<div class="responsive-tabs">
+<h2 class="tabtitle">C++</h2>
+<div class="tabcontent">
+
+<pre class="brush: cpp; highlight: [46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67]; title: ; notranslate" title="">
+// C++ Program to convert a Binary Tree
+// to a Circular Doubly Linked List
+#include&lt;iostream&gt;
+using namespace std;
+
+// To represents a node of a Binary Tree
+struct Node
+{
+    struct Node *left, *right;
+    int data;
+};
+
+// A function that appends rightList at the end
+// of leftList.
+Node *concatenate(Node *leftList, Node *rightList)
+{
+    // If either of the list is empty
+    // then return the other list
+    if (leftList == NULL)
+        return rightList;
+    if (rightList == NULL)
+        return leftList;
+
+    // Store the last Node of left List
+    Node *leftLast = leftList-&gt;left;
+
+    // Store the last Node of right List
+    Node *rightLast = rightList-&gt;left;
+
+    // Connect the last node of Left List
+    // with the first Node of the right List
+    leftLast-&gt;right = rightList;
+    rightList-&gt;left = leftLast;
+
+    // Left of first node points to
+    // the last node in the list
+    leftList-&gt;left = rightLast;
+
+    // Right of last node refers to the first
+    // node of the List
+    rightLast-&gt;right = leftList;
+
+    return leftList;
+}
+
+// Function converts a tree to a circular Linked List
+// and then returns the head of the Linked List
+Node *bTreeToCList(Node *root)
+{
+    if (root == NULL)
+        return NULL;
+
+    // Recursively convert left and right subtrees
+    Node *left = bTreeToCList(root-&gt;left);
+    Node *right = bTreeToCList(root-&gt;right);
+
+    // Make a circular linked list of single node
+    // (or root). To do so, make the right and
+    // left pointers of this node point to itself
+    root-&gt;left = root-&gt;right = root;
+
+    // Step 1 (concatenate the left list with the list 
+    //         with single node, i.e., current node)
+    // Step 2 (concatenate the returned list with the
+    //         right List)
+    return concatenate(concatenate(left, root), right);
+}
+
+// Display Circular Link List
+void displayCList(Node *head)
+{
+    cout &lt;&lt; "Circular Linked List is :\n";
+    Node *itr = head;
+    do
+    {
+        cout &lt;&lt; itr-&gt;data &lt;&lt;" ";
+        itr = itr-&gt;right;
+    } while (head!=itr);
+    cout &lt;&lt; "\n";
+}
+
+
+// Create a new Node and return its address
+Node *newNode(int data)
+{
+    Node *temp = new Node();
+    temp-&gt;data = data;
+    temp-&gt;left = temp-&gt;right = NULL;
+    return temp;
+}
+
+// Driver Program to test above function
+int main()
+{
+    Node *root = newNode(10);
+    root-&gt;left = newNode(12);
+    root-&gt;right = newNode(15);
+    root-&gt;left-&gt;left = newNode(25);
+    root-&gt;left-&gt;right = newNode(30);
+    root-&gt;right-&gt;left = newNode(36);
+
+    Node *head = bTreeToCList(root);
+    displayCList(head);
+
+    return 0;
+}
+</pre>
+
+</div><h2 class="tabtitle">Java</h2>
+<div class="tabcontent">
+
+<pre class="brush: java; highlight: [60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82]; title: ; notranslate" title="">
+// Java Program to convert a Binary Tree to a
+// Circular Doubly Linked List
+
+// Node class represents a Node of a Tree
+class Node
+{
+    int val;
+    Node left,right;
+
+    public Node(int val)
+    {
+        this.val = val;
+        left = right = null;
+    }
+}
+
+// A class to represent a tree
+class Tree
+{
+    Node root;
+    public Tree()
+    {
+        root = null;
+    }
+
+    // concatenate both the lists and returns the head
+    // of the List
+    public Node concatenate(Node leftList,Node rightList)
+    {
+        // If either of the list is empty, then
+        // return the other list
+        if (leftList == null)
+            return rightList;
+        if (rightList == null)
+            return leftList;
+
+        // Store the last Node of left List
+        Node leftLast = leftList.left;
+
+        // Store the last Node of right List
+        Node rightLast = rightList.left;
+
+        // Connect the last node of Left List
+        // with the first Node of the right List
+        leftLast.right = rightList;
+        rightList.left = leftLast;
+
+        // left of first node refers to
+        // the last node in the list
+        leftList.left = rightLast;
+
+        // Right of last node refers to the first
+        // node of the List
+        rightLast.right = leftList;
+
+        // Return the Head of the List
+        return leftList;
+    }
+
+    // Method converts a tree to a circular
+    // Link List and then returns the head
+    // of the Link List
+    public Node bTreeToCList(Node root)
+    {
+        if (root == null)
+            return null;
+
+        // Recursively convert left and right subtrees
+        Node left = bTreeToCList(root.left);
+        Node right = bTreeToCList(root.right);
+
+        // Make a circular linked list of single node
+        // (or root). To do so, make the right and
+        // left pointers of this node point to itself
+        root.left = root.right = root;
+
+        // Step 1 (concatenate the left list with the list 
+        //         with single node, i.e., current node)
+        // Step 2 (concatenate the returned list with the
+        //         right List)
+        return concatenate(concatenate(left, root), right);
+    }
+
+    // Display Circular Link List
+    public void display(Node head)
+    {
+        System.out.println("Circular Linked List is :");
+        Node itr = head;
+        do
+        {
+            System.out.print(itr.val+ " " );
+            itr = itr.right;
+        }
+        while (itr != head);
+        System.out.println();
+    }
+}
+
+// Driver Code
+class Main
+{
+    public static void main(String args[])
+    {
+        // Build the tree
+        Tree tree = new Tree();
+        tree.root = new Node(10);
+        tree.root.left = new Node(12);
+        tree.root.right = new Node(15);
+        tree.root.left.left = new Node(25);
+        tree.root.left.right = new Node(30);
+        tree.root.right.left = new Node(36);
+
+        // head refers to the head of the Link List
+        Node head = tree.bTreeToCList(tree.root);
+
+        // Display the Circular LinkedList
+        tree.display(head);
+    }
+}
+</pre>
+<p></p></div></div><br>
+Output:
+<pre>Circular Linked List is :
+25 12 30 10 36 15
+</pre>
+<p>This article is contributed by <strong>Chirag Agarwal</strong>. If you like GeeksforGeeks and would like to contribute, you can also write an article using <a href="http://www.contribute.geeksforgeeks.org">contribute.geeksforgeeks.org</a> or mail your article to contribute@geeksforgeeks.org. See your article appearing on the GeeksforGeeks main page and help other Geeks.</p>
+<p>Please write comments if you find anything incorrect, or you want to share more information about the topic discussed above.</p>
+
+			<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- Big Rectangle Blog Bottom -->
+<ins class="adsbygoogle" style="display:inline-block;width:336px;height:280px" data-ad-client="ca-pub-9465609616171866" data-ad-slot="4061219431"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<br>
+
+
+<h1><strong><a href="http://www.practice.geeksforgeeks.org/tags.php">Company Wise Coding Practice</a>
+   <a href="http://www.practice.geeksforgeeks.org/probtags.php">Topic Wise Coding Practice</a></strong></h1>
+
+		</div>
