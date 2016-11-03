@@ -1,12 +1,16 @@
 import scrapy
 import pdfkit
+import requests
 
 class GeeksSpider(scrapy.Spider):
     name = "geeks"
+    start_url = 'http://www.geeksforgeeks.org/category/linked-list/page/'
+
     def start_requests(self):
-        start_url = 'http://www.geeksforgeeks.org/category/linked-list/'
-        yield scrapy.Request(url=start_url, callback = self.nest)
-    pdfkit.from_file('geeks.html', 'out.pdf')
+        i=1
+        start_url = 'http://www.geeksforgeeks.org/category/linked-list/page/'
+        test = requests.get(start_url+str(i))
+        yield scrapy.Request(url=start_url+str(i), callback = self.nest)
 
 
     def parse(self, response):
