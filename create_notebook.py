@@ -1,3 +1,3 @@
 import pdfkit
 
-pdfkit.from_file('geeks.html', 'out.pdf')
+pdfkit.from_file('linked-list.html', 'linked-list.pdf')
